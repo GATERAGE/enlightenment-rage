@@ -70,7 +70,7 @@ _escape_parse(const char *str)
 
    for (d = dest, s = str; *s; d++)
      {
-        if (s[0] == '%')
+        if (s[0] == '%' && !isspace(s[1]))
           {
              if (s[1] && s[2])
                {
