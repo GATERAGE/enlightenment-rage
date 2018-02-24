@@ -269,7 +269,7 @@ elm_main(int argc, char **argv)
      {
         evas_object_smart_callback_add(vid, "open_done", _cb_loaded, file);
         emotion_object_file_set(vid, file);
-        vid_timeout = ecore_timer_add(20.0, _cb_timeout, NULL);
+        vid_timeout = ecore_timer_add(360.0, _cb_timeout, NULL);
         elm_run();
      }
 out:
