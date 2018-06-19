@@ -1160,8 +1160,13 @@ video_file_autosub_set(Evas_Object *obj, const char *file, const char *sub)
           }
         if (!found) video_sub_file_set(obj, NULL);
      }
-   else video_sub_file_set(obj, sub);
-   video_file_set(obj, file);
+   else
+     {
+        video_sub_file_set(obj, sub);
+     }
+
+   if (file)
+     video_file_set(obj, file);
 }
 
 const char *
