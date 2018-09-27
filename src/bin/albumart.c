@@ -81,6 +81,7 @@ _fetch(Eina_Strbuf *sb)
 
    qs = eina_strbuf_string_get(sb);
    if (!qs) return NULL;
+//   printf("GET %s\n", qs);
    f = ecore_con_url_new(qs);
    if (!f) return NULL;
    ecore_con_url_additional_header_add
@@ -96,9 +97,19 @@ _cb_http_data(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
    Ecore_Con_Event_Url_Data *ev = event;
 
    if (ev->url_con != fetch) return EINA_TRUE;
+//   printf("HTTP DATA %i (fetch image? %i)\n", (int)ev->size, fetch_image);
    if (fetch_image) fwrite(ev->data, ev->size, 1, fout);
    else if (sb_result)
      eina_strbuf_append_length(sb_result, (char *)ev->data, (size_t)ev->size);
+   return EINA_FALSE;
+}
+
+static Eina_Bool
+_delay_fetch(void *data)
+{
+   Eina_Strbuf *sb = data;
+   fetch = _fetch(sb);
+   eina_strbuf_free(sb);
    return EINA_FALSE;
 }
 
@@ -142,6 +153,7 @@ _cb_http_complete(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
                        if (pe)
                          {
                             eina_strbuf_append_length(sb, p, pe - p);
+                            printf("FOUND IMG\n");
                             ok = EINA_TRUE;
                          }
                     }
@@ -155,6 +167,7 @@ _cb_http_complete(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
                             if (pe)
                               {
                                  eina_strbuf_append_length(sb, p, pe - p);
+                                 printf("FOUND IMG2\n");
                                  ok = EINA_TRUE;
                               }
                          }
@@ -176,7 +189,10 @@ _cb_http_complete(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
                             if (fout)
                               {
                                  fetch_image = EINA_TRUE;
-                                 fetch = _fetch(sb);
+// delay this - it seems google doesn;'t like to respond if we ask too fast
+//                                 fetch = _fetch(sb);
+                                 ecore_timer_add(1.5, _delay_fetch, sb);
+                                 sb = NULL;
                                  free(fetchpath);
                                  free(fetchpath2);
                                  fetchpath = strdup(path);
@@ -185,7 +201,7 @@ _cb_http_complete(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
                             free(path);
                          }
                     }
-                  eina_strbuf_free(sb);
+                  if (sb) eina_strbuf_free(sb);
                }
              eina_strbuf_free(sb_result);
              sb_result = NULL;
