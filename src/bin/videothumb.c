@@ -239,6 +239,7 @@ _cb_videothumb_delay(void *data)
    Evas_Object *obj = data;
    Videothumb *sd = evas_object_smart_data_get(obj);
    unsigned int maxnum = (eina_cpu_count() / 2) + 1;
+   if (maxnum > 4) maxnum = 4;
    if (!sd) return EINA_FALSE;
    if (eina_list_count(busy_thumbs) < maxnum)
      {
