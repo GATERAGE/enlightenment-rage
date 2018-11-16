@@ -58,18 +58,26 @@ _thumbpath(const char *file)
    unsigned char sum[20];
 
    if (!sha1((unsigned char *)file, strlen(file), sum)) return NULL;
-   snprintf(buf_base, sizeof(buf_base), "%s/rage/albumart/%02x",
-            efreet_cache_home_get(), sum[0]);
+   if ((size_t)snprintf(buf_base, sizeof(buf_base), "%s/rage/albumart/%02x",
+                        efreet_cache_home_get(), sum[0]) >= sizeof(buf_base))
+     {
+        fprintf(stderr, "Not enough buffer space for thumb path");
+        return NULL;
+     }
    if (!ecore_file_mkpath(buf_base)) return NULL;
-   snprintf(buf_file, sizeof(buf_base),
-            "%s/%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
-            "%02x%02x%02x%02x%02x%02x%02x%02x.jpg",
-            buf_base,
-            sum[1], sum[2], sum[3],
-            sum[4], sum[5], sum[6], sum[7],
-            sum[8], sum[9], sum[10], sum[11],
-            sum[12], sum[13], sum[14], sum[15],
-            sum[16], sum[17], sum[18], sum[19]);
+   if ((size_t)snprintf(buf_file, sizeof(buf_base),
+                        "%s/%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+                        "%02x%02x%02x%02x%02x%02x%02x%02x.jpg",
+                        buf_base,
+                        sum[1], sum[2], sum[3],
+                        sum[4], sum[5], sum[6], sum[7],
+                        sum[8], sum[9], sum[10], sum[11],
+                        sum[12], sum[13], sum[14], sum[15],
+                        sum[16], sum[17], sum[18], sum[19]) >= sizeof(buf_base))
+     {
+        fprintf(stderr, "Not enough buffer space for thumb path");
+        return NULL;
+     }
    return strdup(buf_file);
 }
 

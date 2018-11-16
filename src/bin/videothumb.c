@@ -388,17 +388,25 @@ _videothumb_image_load(Evas_Object *obj)
      {
         if (!sha1((unsigned char *)sd->realpath, strlen(sd->realpath), sum))
           return;
-        snprintf(buf_base, sizeof(buf_base), "%s/rage/thumb/%02x",
-                 efreet_cache_home_get(), sum[0]);
-        snprintf(buf_file, sizeof(buf_base),
-                 "%s/%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
-                 "%02x%02x%02x%02x%02x%02x%02x%02x.eet",
-                 buf_base,
-                 sum[1], sum[2], sum[3],
-                 sum[4], sum[5], sum[6], sum[7],
-                 sum[8], sum[9], sum[10], sum[11],
-                 sum[12], sum[13], sum[14], sum[15],
-                 sum[16], sum[17], sum[18], sum[19]);
+        if ((size_t)snprintf(buf_base, sizeof(buf_base), "%s/rage/thumb/%02x",
+                             efreet_cache_home_get(), sum[0]) >= sizeof(buf_base))
+          {
+             fprintf(stderr, "Not enough buffer space for thumb path");
+             return;
+          }
+        if ((size_t)snprintf(buf_file, sizeof(buf_base),
+                             "%s/%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+                             "%02x%02x%02x%02x%02x%02x%02x%02x.eet",
+                             buf_base,
+                             sum[1], sum[2], sum[3],
+                             sum[4], sum[5], sum[6], sum[7],
+                             sum[8], sum[9], sum[10], sum[11],
+                             sum[12], sum[13], sum[14], sum[15],
+                             sum[16], sum[17], sum[18], sum[19]) >= sizeof(buf_file))
+          {
+             fprintf(stderr, "Not enough buffer space for thumb path");
+             return;
+          }
         if (sd->realfile) eina_stringshare_del(sd->realfile);
         sd->realfile = eina_stringshare_add(buf_file);
         sd->realpos = (((unsigned int)(sd->pos * 1000.0)) / 10000) * 10000;
