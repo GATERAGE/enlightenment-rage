@@ -601,7 +601,8 @@ win_add(void)
    inf->lay = o;
    controls_init(win, o);
 
-   o = evas_object_rectangle_add(evas_object_evas_get(win));
+   o = elm_button_add(win);
+   elm_object_focus_move_policy_set(o, ELM_FOCUS_MOVE_POLICY_CLICK);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_repeat_events_set(o, EINA_TRUE);
