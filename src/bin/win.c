@@ -602,6 +602,7 @@ win_add(void)
    controls_init(win, o);
 
    o = elm_button_add(win);
+   elm_object_focus_allow_set(o, EINA_FALSE);
    elm_object_focus_move_policy_set(o, ELM_FOCUS_MOVE_POLICY_CLICK);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_color_set(o, 0, 0, 0, 0);
