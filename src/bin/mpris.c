@@ -681,8 +681,8 @@ GETTER(metadata)
    Inf *inf = evas_object_data_get(mainwin, "inf");
    Eldbus_Message_Iter *array = NULL, *entry = NULL, *var, *var2;
    uint64_t len = 0;
-   char *buf = NULL;
-   const char *s;
+   char *buf = NULL, *tmp = NULL, *p;
+   const char *s, *file;
 
    if (!inf) return EINA_FALSE;
    // XXX: TODO:
@@ -740,12 +740,45 @@ GETTER(metadata)
 
    s = video_title_get(inf->vid);
    if (!s) s = video_meta_title_get(inf->vid);
+   if ((!s) && (inf->file_cur))
+     {
+        Winvid_Entry *vid = inf->file_cur->data;
+        if (vid)
+          {
+             file = vid->file;
+             s = ecore_file_file_get(vid->uri ? vid->uri->path : file);
+             if (s)
+               {
+                  tmp = alloca(strlen(s) + 1);
+                  strcpy(tmp, s);
+                  for (p = tmp; *p; p++)
+                    {
+                       // nuke stupid characters from the label that may be in filename
+                       if ((*p == '_') || (*p == '#') || (*p == '$') || (*p == '%') ||
+                           (*p == '*') || (*p == '+') || (*p == '[') || (*p == ']') ||
+                           (*p == ';') || (*p == '<') || (*p == '=') || (*p == '>') ||
+                           (*p == '^') || (*p == '`') || (*p == '{') || (*p == '}') ||
+                           (*p == '|') || (*p == '~') || (*p == 127) ||
+                           (*p == '\'') || (*p == '\\'))
+                         {
+                            *p = ' ';
+                         }
+                       else if (*p == '.')
+                         {
+                            *p = 0;
+                            break;
+                         }
+                    }
+                  s = tmp;
+               }
+          }
+     }
    if (s)
      {
         eldbus_message_iter_arguments_append(array, "{sv}", &entry);
         eldbus_message_iter_basic_append(entry, 's', "xesam:title");
         var = eldbus_message_iter_container_new(entry, 'v', "s");
-        eldbus_message_iter_basic_append(var, 's', buf);
+        eldbus_message_iter_basic_append(var, 's', s);
         eldbus_message_iter_container_close(entry, var);
         eldbus_message_iter_container_close(array, entry);
      }
