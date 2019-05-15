@@ -2,7 +2,7 @@
 project('rage', 'c',
         version        : '0.3.0',
         license        : 'BSD 2 clause',
-        default_options: [ 'c_std=gnu99' ],
+        default_options: [ 'buildtype=plain', 'c_std=gnu99' ],
         meson_version  : '>= 0.40.0')
 base_url = 'https://www.enlightenment.org/about-'
 
