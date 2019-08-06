@@ -634,40 +634,48 @@ video_file_set(Evas_Object *obj, const char *file)
    evas_object_hide(sd->o_vid);
    evas_object_hide(sd->clip);
    eina_stringshare_replace(&(sd->file), file);
-   if (!strncasecmp(sd->file, "file:/", 6))
+   if (sd->file)
      {
-        Efreet_Uri *uri = efreet_uri_decode(sd->file);
-        if (uri)
+        if (!strncasecmp(sd->file, "file:/", 6))
           {
-             realfile = ecore_file_realpath(uri->path);
-             efreet_uri_free(uri);
-          }
-     }
-   else if ((!strncasecmp(sd->file, "http:/", 6)) ||
-            (!strncasecmp(sd->file, "https:/", 7)))
-     realfile = strdup(sd->file);
-   else
-     realfile = ecore_file_realpath(sd->file);
-   eina_stringshare_replace(&(sd->realfile), realfile);
-   free(realfile);
-   eina_stringshare_replace(&(sd->artfile), NULL);
-   emotion_object_file_set(sd->o_vid, sd->file);
-   video_position_set(obj, 0.0);
-   if ((sd->file) && (sd->doart))
-     {
-        const char *extn = strchr(sd->file, '.');
-        if (extn)
-          {
-             if ((!strcasecmp(extn, ".mp3")) ||
-                 (!strcasecmp(extn, ".m4a")) ||
-                 (!strcasecmp(extn, ".oga")) ||
-                 (!strcasecmp(extn, ".aac")) ||
-                 (!strcasecmp(extn, ".flac")) ||
-                 (!strcasecmp(extn, ".wav")))
+             Efreet_Uri *uri = efreet_uri_decode(sd->file);
+             if (uri)
                {
-                  _art_check(obj);
+                  realfile = ecore_file_realpath(uri->path);
+                  efreet_uri_free(uri);
                }
           }
+        else if ((!strncasecmp(sd->file, "http:/", 6)) ||
+                 (!strncasecmp(sd->file, "https:/", 7)))
+          realfile = strdup(sd->file);
+        else
+          realfile = ecore_file_realpath(sd->file);
+        eina_stringshare_replace(&(sd->realfile), realfile);
+        free(realfile);
+        eina_stringshare_replace(&(sd->artfile), NULL);
+        emotion_object_file_set(sd->o_vid, sd->file);
+        video_position_set(obj, 0.0);
+        if (sd->doart)
+          {
+             const char *extn = strchr(sd->file, '.');
+             if (extn)
+               {
+                  if ((!strcasecmp(extn, ".mp3")) ||
+                      (!strcasecmp(extn, ".m4a")) ||
+                      (!strcasecmp(extn, ".oga")) ||
+                      (!strcasecmp(extn, ".aac")) ||
+                      (!strcasecmp(extn, ".flac")) ||
+                      (!strcasecmp(extn, ".wav")))
+                    {
+                       _art_check(obj);
+                    }
+               }
+          }
+     }
+   else
+     {
+        eina_stringshare_replace(&(sd->realfile), NULL);
+        eina_stringshare_replace(&(sd->artfile), NULL);
      }
 }
 
