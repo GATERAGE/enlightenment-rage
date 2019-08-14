@@ -172,12 +172,16 @@ Eina_Bool
 _cb_drop(void *data, Evas_Object *o EINA_UNUSED, Elm_Selection_Data *ev)
 {
    Evas_Object *win = data;
-   char **plist, **p, *esc;
+   char **plist, **p, *esc, *tmp;
 
    if (!ev->data)
       return EINA_TRUE;
 
-   plist = eina_str_split((char *) ev->data, "\n", -1);
+   tmp = malloc(ev->len + 1);
+   if (!tmp) return EINA_TRUE;
+   memcpy(tmp, ev->data, ev->len);
+   tmp[ev->len] = 0;
+   plist = eina_str_split(tmp, "\n", -1);
    for (p = plist; *p != NULL; ++p)
      {
         esc = _escape_parse(*p);
@@ -198,6 +202,7 @@ _cb_drop(void *data, Evas_Object *o EINA_UNUSED, Elm_Selection_Data *ev)
 
    free(*plist);
    free(plist);
+   free(tmp);
 
    if (!pending_dir)
       _dnd_finish(win);
