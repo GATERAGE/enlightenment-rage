@@ -76,11 +76,7 @@ collections {
                }
                t = get_int(pos_timer);
                if (t) cancel_timer(t);
-               if (!get_int(novideo)) {
-                  t = timer(5.0, "pos_timeout", 1);
-               } else {
-                  t = 0;
-               }
+               t = timer(5.0, "pos_timeout", 1);
                set_int(pos_timer, t);
             }
          }
@@ -573,7 +569,7 @@ collections {
          }
          program {
             signal: "state,novideo"; source: "rage";
-            action: STATE_SET "novideo" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "controlbar";
          }
          program {
