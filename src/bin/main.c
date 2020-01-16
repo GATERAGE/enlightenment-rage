@@ -251,12 +251,16 @@ elm_main(int argc, char **argv)
         else
           {
              char *realpath = strdup(argv[i]);
-             Efreet_Uri *uri = efreet_uri_decode(realpath);
-             if (uri)
+
+             if (!strncasecmp(realpath, "file:/", 6))
                {
-                  free(realpath);
-                  realpath = ecore_file_realpath(uri->path);
-                  efreet_uri_free(uri);
+                  Efreet_Uri *uri = efreet_uri_decode(realpath);
+                  if (uri)
+                    {
+                       free(realpath);
+                       realpath = ecore_file_realpath(uri->path);
+                       efreet_uri_free(uri);
+                    }
                }
              if (ecore_file_is_dir(realpath))
                {

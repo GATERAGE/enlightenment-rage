@@ -632,12 +632,18 @@ video_file_set(Evas_Object *obj, const char *file)
    char *realfile = NULL;
    Video *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
+   printf("video_file_set ... %s\n", file);
    evas_object_hide(sd->o_img);
    evas_object_hide(sd->o_vid);
    evas_object_hide(sd->clip);
    eina_stringshare_replace(&(sd->file), file);
    if (sd->file)
      {
+        const char *colon = strchr(sd->file, ':');
+        Eina_Bool is_url = EINA_FALSE;
+
+        if ((colon) && (colon[1] == '/') && (colon[2] == '/'))
+          is_url = EINA_TRUE;
         if (!strncasecmp(sd->file, "file:/", 6))
           {
              Efreet_Uri *uri = efreet_uri_decode(sd->file);
@@ -647,8 +653,7 @@ video_file_set(Evas_Object *obj, const char *file)
                   efreet_uri_free(uri);
                }
           }
-        else if ((!strncasecmp(sd->file, "http:/", 6)) ||
-                 (!strncasecmp(sd->file, "https:/", 7)))
+        else if (is_url)
           realfile = strdup(sd->file);
         else
           realfile = ecore_file_realpath(sd->file);
@@ -656,6 +661,7 @@ video_file_set(Evas_Object *obj, const char *file)
         free(realfile);
         eina_stringshare_replace(&(sd->artfile), NULL);
         emotion_object_file_set(sd->o_vid, sd->file);
+        printf("set emotion to %s\n", sd->file);
         video_position_set(obj, 0.0);
         if (sd->doart)
           {
