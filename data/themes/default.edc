@@ -342,7 +342,7 @@ collections {
             }
             description { state: "pref" 0.0;
                inherit: "default" 0.0;
-               min: 160 160;
+               min: 290 290;
             }
          }
          program {
@@ -1007,9 +1007,9 @@ collections {
             scale: 1;
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "slash";
-               rel1.relative: 0.0 0.0;
-               rel1.offset: -5 0;
+               rel1.to: "pos_next";
+               rel1.relative: 1.0 0.0;
+               rel1.offset: 4 0;
                rel2.to: "slash";
                rel2.relative: 0.0 1.0;
                rel2.offset: -5 -1;
@@ -1049,11 +1049,11 @@ collections {
             description { state: "default" 0.0;
                fixed: 1 1;
                rel1.to_y: "pos_next";
-               rel1.to_x: "rage.pos.swallow";
+               rel1.to_x: "vol";
                rel1.relative: 0.0 0.0;
                rel1.offset: -1 0;
                rel2.to_y: "pos_next";
-               rel2.to_x: "rage.pos.swallow";
+               rel2.to_x: "vol";
                rel2.relative: 0.0 1.0;
                rel2.offset: -1 -1;
                color: 255 255 255 255;
