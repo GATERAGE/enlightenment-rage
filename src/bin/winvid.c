@@ -90,6 +90,11 @@ _cb_title(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
 static void
 _cb_audio(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
 {
+   Inf *inf = evas_object_data_get(data, "inf");
+   Evas_Object *sl = elm_object_part_content_get(inf->lay, "rage.vol.swallow");
+   double vol = video_volume_get(inf->vid);
+   printf("%1.2f\n", vol);
+   elm_slider_value_set(sl, vol * 100);
    win_title_update(data);
 }
 

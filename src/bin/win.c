@@ -397,6 +397,25 @@ win_do_next(Evas_Object *win)
      }
 }
 
+void
+win_do_volume(Evas_Object *win, double vol)
+{
+   Inf *inf = evas_object_data_get(win, "inf");
+   Edje_Message_Float msg;
+   double curvol;
+
+   curvol = video_volume_get(inf->vid);
+   video_volume_set(inf->vid, vol);
+   msg.val = vol;
+   edje_object_message_send(elm_layout_edje_get(inf->lay),
+                            EDJE_MESSAGE_FLOAT, 1, &msg);
+   mpris_volume_change();
+   if (vol < curvol)
+     elm_layout_signal_emit(inf->lay, "action,volume_down", "rage");
+   else
+     elm_layout_signal_emit(inf->lay, "action,volume_up", "rage");
+}
+
 static void
 _restart_vid(Evas_Object *win, Evas_Object *lay, Evas_Object *vid, const char *file, const char *sub)
 {

@@ -82,6 +82,23 @@ _cb_win_close(void *data EINA_UNUSED, Evas_Object *obj, const char *emission EIN
 }
 
 static void
+_cb_vol(void *data, Evas_Object *obj, void *info EINA_UNUSED)
+{
+   win_do_volume(data, elm_slider_value_get(obj) / 100.0);
+}
+
+static void
+_cb_action_vol(void *data, Evas_Object *obj EINA_UNUSED, const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
+{
+   Inf *inf = evas_object_data_get(data, "inf");
+   video_mute_set(inf->vid, !video_mute_get(inf->vid));
+   if (video_mute_get(inf->vid))
+     elm_layout_signal_emit(inf->lay, "action,mute", "rage");
+   else
+     elm_layout_signal_emit(inf->lay, "action,unmute", "rage");
+}
+
+static void
 _time_print(double t, double max, int size, char *buf, Eina_Bool subsec)
 {
    double tsf;
@@ -143,6 +160,8 @@ controls_init(Evas_Object *win, Evas_Object *lay)
                                   _cb_pos_pause, win);
    elm_layout_signal_callback_add(lay, "pos,action,options", "rage",
                                   _cb_options, win);
+   elm_layout_signal_callback_add(lay, "pos,action,vol", "rage",
+                                  _cb_action_vol, win);
    elm_layout_signal_callback_add(lay, "list,show", "rage",
                                   _cb_list_show, win);
    elm_layout_signal_callback_add(lay, "list,hide", "rage",
@@ -164,13 +183,21 @@ controls_init(Evas_Object *win, Evas_Object *lay)
       elm_object_part_content_set(lay, _nam, o)
 
    FINGER_SIZE("rage.pos.swallow");
-   FINGER_SIZE("rage.vol.swallow");
+//   FINGER_SIZE("rage.vol.swallow");
    FINGER_SIZE("rage.options.swallow");
    FINGER_SIZE("rage.win.fullscreen");
    FINGER_SIZE("rage.win.close");
    FINGER_SIZE("rage.pos.prev.swallow");
    FINGER_SIZE("rage.pos.play.swallow");
    FINGER_SIZE("rage.pos.next.swallow");
+
+   o = elm_slider_add(win);
+   elm_object_focus_allow_set(o, EINA_FALSE);
+   elm_slider_min_max_set(o, 0, 100);
+   elm_slider_indicator_format_set(o, "%1.0f");
+   evas_object_smart_callback_add(o, "changed", _cb_vol, win);
+   elm_object_part_content_set(lay, "rage.vol.swallow", o);
+   evas_object_show(o);
 }
 
 void

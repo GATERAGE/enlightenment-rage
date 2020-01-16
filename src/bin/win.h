@@ -35,6 +35,7 @@ void win_do_pause(Evas_Object *win);
 void win_do_play_pause(Evas_Object *win);
 void win_do_prev(Evas_Object *win);
 void win_do_next(Evas_Object *win);
+void win_do_volume(Evas_Object *win, double vol);
 
 // lower level controls
 void win_video_restart(Evas_Object *win);

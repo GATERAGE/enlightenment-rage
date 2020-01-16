@@ -281,6 +281,7 @@ _cb_play_start(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED
    Video *sd = evas_object_smart_data_get(data);
    if (!sd) return;
    evas_object_smart_callback_call(data, "play_start", NULL);
+   evas_object_smart_callback_call(data, "audio", NULL);
    mpris_metadata_change();
 }
 
@@ -290,6 +291,7 @@ _cb_play_finish(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSE
    Video *sd = evas_object_smart_data_get(data);
    if (!sd) return;
    evas_object_smart_callback_call(data, "play_finish", NULL);
+   evas_object_smart_callback_call(data, "audio", NULL);
    mpris_metadata_change();
 }
 
@@ -701,6 +703,7 @@ video_mute_set(Evas_Object *obj, Eina_Bool mute)
    Video *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    emotion_object_audio_mute_set(sd->o_vid, mute);
+   evas_object_smart_callback_call(obj, "audio", NULL);
 }
 
 Eina_Bool
@@ -885,6 +888,7 @@ video_volume_set(Evas_Object *obj, double vol)
    Video *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    emotion_object_audio_volume_set(sd->o_vid, vol);
+   evas_object_smart_callback_call(obj, "audio", NULL);
 }
 
 double

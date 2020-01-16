@@ -79,9 +79,7 @@ key_handle(Evas_Object *win, Evas_Event_Key_Down *ev)
           {
              double vol = video_volume_get(inf->vid) + 0.05;
              if (vol > 1.0) vol = 1.0;
-             video_volume_set(inf->vid, vol);
-             elm_layout_signal_emit(inf->lay, "action,volume_up", "rage");
-             mpris_volume_change();
+             win_do_volume(win, vol);
           }
      }
    else if ((!strcmp(ev->key, "Down")) ||
@@ -95,9 +93,7 @@ key_handle(Evas_Object *win, Evas_Event_Key_Down *ev)
           {
              double vol = video_volume_get(inf->vid) - 0.05;
              if (vol < 0.0) vol = 0.0;
-             video_volume_set(inf->vid, vol);
-             elm_layout_signal_emit(inf->lay, "action,volume_down", "rage");
-             mpris_volume_change();
+             win_do_volume(win, vol);
           }
      }
    else if ((!strcmp(ev->key, "space")) ||
