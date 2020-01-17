@@ -632,7 +632,6 @@ video_file_set(Evas_Object *obj, const char *file)
    char *realfile = NULL;
    Video *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
-   printf("video_file_set ... %s\n", file);
    evas_object_hide(sd->o_img);
    evas_object_hide(sd->o_vid);
    evas_object_hide(sd->clip);
@@ -661,7 +660,6 @@ video_file_set(Evas_Object *obj, const char *file)
         free(realfile);
         eina_stringshare_replace(&(sd->artfile), NULL);
         emotion_object_file_set(sd->o_vid, sd->file);
-        printf("set emotion to %s\n", sd->file);
         video_position_set(obj, 0.0);
         if (sd->doart)
           {
