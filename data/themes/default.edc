@@ -474,21 +474,31 @@ collections {
             }
          }
 
+         part { name: "browser2"; type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel2.relative: 1.0 0.0;
+               rel2.to_y: "controlbar";
+               fixed: 1 1;
+            }
+            description { state: "fs" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: 40 0;
+               rel2.offset: -41 -1;
+            }
+         }
          part { name: "rage.browser"; type: SWALLOW;
             description { state: "default" 0.0;
+               rel.to: "browser2";
                rel1.relative: 1.0 0.0;
-               rel1.offset: 40 0;
-               rel2.relative: 2.0 0.0;
-               rel2.offset: -41 -1;
-               rel2.to_y: "controlbar";
+               rel2.relative: 2.0 1.0;
                fixed: 1 1;
                visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 0.0;
-               color: 255 255 255 255;
+               rel2.relative: 1.0 1.0;
                visible: 1;
             }
          }
@@ -525,6 +535,16 @@ collections {
                set_int(browser, 0);
                pos_show();
             }
+         }
+         program {
+            signal: "state,win,fullscreen"; source: "rage";
+            action: STATE_SET "fs" 0.0;
+            target: "browser2";
+         }
+         program {
+            signal: "state,win,normal"; source: "rage";
+            action: STATE_SET "default" 0.0;
+            target: "browser2";
          }
 
          part { name: "rage.list"; type: SWALLOW;
@@ -2035,8 +2055,8 @@ collections {
             description { state: "default" 0.0;
                fixed: 0 1;
                align: 0.0 0.0;
-               rel1.offset: 0 10;
-               rel2.offset: -1 10;
+               rel1.offset: 20 10;
+               rel2.offset: -21 10;
                rel2.relative: 1.0 0.0;
                color: 255 255 255 255;
                text { font: "Sans:style=Bold"; size: 10;
@@ -2044,20 +2064,23 @@ collections {
                   min: 0 1;
                   elipsis: 0;
                }
+               offscale;
             }
             description { state: "fullscreen" 0.0;
                inherit: "default" 0.0;
-               rel1.offset: 0 40;
-               rel2.offset: -1 40;
+               rel1.offset: 40 40;
+               rel2.offset: -41 40;
                text.size: 40;
             }
          }
          part { name: "rage.content"; type: SWALLOW;
+            scale: 1;
             description { state: "default" 0.0;
                rel1.to_y: "rage.title";
                rel1.relative: 0.0 1.0;
                rel1.offset: 0 10;
                rel2.offset: -1 -1;
+               offscale;
             }
             description { state: "fullscreen" 0.0;
                inherit: "default" 0.0;
@@ -2115,70 +2138,9 @@ collections {
                rel2.to: "clip";
             }
          }
-         part { name: "glow"; type: RECT; mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1.to: "clip";
-               rel2.to: "clip";
-               color: 51 153 255 0;
-               visible: 0;
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               rel1.to: "p1";
-               rel1.relative: 0.75 0.75;
-               rel2.to: "p2";
-               rel2.relative: 0.25 0.25;
-               color: 51 153 255 255;
-               visible: 1;
-            }
-         }
-         program {
-            signal: "rage,state,selected"; source: "rage";
-            action: STATE_SET "selected" 0.0;
-            transition: SINUSOIDAL 0.1;
-            target: "glow";
-            target: "clip";
-         }
-         program {
-            signal: "rage,state,unselected"; source: "rage";
-            action: STATE_SET "default" 0.0;
-            transition: SINUSOIDAL 0.3;
-            target: "glow";
-            target: "clip";
-         }
 
-         part { name: "p1"; type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel2.relative: 0.0 0.0;
-               align: 0.0 0.0;
-               min: 8 8;
-               fixed: 1 1;
-            }
-            description { state: "fullscreen" 0.0;
-               inherit: "default" 0.0;
-               min: 16 16;
-            }
-         }
-         part { name: "p2"; type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1.relative: 1.0 1.0;
-               align: 1.0 1.0;
-               min: 8 8;
-               fixed: 1 1;
-            }
-            description { state: "fullscreen" 0.0;
-               inherit: "default" 0.0;
-               min: 16 16;
-            }
-         }
          part { name: "clip"; type: RECT;
             description { state: "default" 0.0;
-               rel1.to: "p1";
-               rel1.relative: 1.0 1.0;
-               rel2.to: "p2";
-               rel2.relative: 0.0 0.0;
                color: 192 192 192 255;
             }
             description { state: "selected" 0.0;
@@ -2208,9 +2170,9 @@ collections {
             description { state: "default" 0.0;
                fixed: 1 1;
                align: 0.0 1.0;
-               rel1.offset: 2 2;
+               rel1.offset: 5 5;
                rel1.to: "clip";
-               rel2.offset: -3 -3;
+               rel2.offset: -6 -10;
                rel2.to: "clip";
                color: 255 255 255 255;
                text { font: "Sans"; size: 20;
@@ -2219,6 +2181,7 @@ collections {
                   min: 0 1;
                   elipsis: 0;
                }
+               offscale;
             }
             description { state: "fullscreen" 0.0;
                inherit: "default" 0.0;
@@ -2226,6 +2189,36 @@ collections {
                rel2.offset: -9 -9;
                text.style: "browser_item_label_fullscreen";
             }
+         }
+         part { name: "glow"; type: RECT; mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel.to: "clip";
+               rel1.relative: 0.0 1.0;
+               align: 0.0 1.0;
+               color: 51 153 255 0;
+               visible: 0;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               min: 0 5;
+               color: 51 153 255 255;
+               visible: 1;
+            }
+         }
+         program {
+            signal: "rage,state,selected"; source: "rage";
+            action: STATE_SET "selected" 0.0;
+            transition: SINUSOIDAL 0.1;
+            target: "glow";
+            target: "clip";
+         }
+         program {
+            signal: "rage,state,unselected"; source: "rage";
+            action: STATE_SET "default" 0.0;
+            transition: SINUSOIDAL 0.3;
+            target: "glow";
+            target: "clip";
          }
          part { name: "event"; type: RECT;
             ignore_flags: ON_HOLD;
@@ -2242,14 +2235,10 @@ collections {
          program { signal: "state,fullscreen"; source: "rage";
             action: STATE_SET "fullscreen" 0.0;
             target: "rage.title";
-            target: "p1";
-            target: "p2";
          }
          program { signal: "state,normal"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "rage.title";
-            target: "p1";
-            target: "p2";
          }
       }
    }

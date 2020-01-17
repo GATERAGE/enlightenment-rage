@@ -65,8 +65,8 @@ static void
 _item_size_get(Evas_Object *win, Evas_Coord *w, Evas_Coord *h)
 {
    Evas_Coord sz = 0;
-   Evas_Coord minw = 80, minh = 80;
-   Evas_Coord maxw = 120, maxh = 120;
+   Evas_Coord minw = 100, minh = 100;
+   Evas_Coord maxw = 140, maxh = 140;
 
    minw = elm_config_scale_get() * (double)minw;
    minh = elm_config_scale_get() * (double)minh;
@@ -90,7 +90,7 @@ _item_size_get(Evas_Object *win, Evas_Coord *w, Evas_Coord *h)
    if (*h < minh) *h = minh;
    if ((maxw > 0) && (*w > maxw)) *w = maxw;
    if ((maxh > 0) && (*h > maxh)) *h = maxh;
-   if (((*w * 100) / *h) < 50) *w = (*h * 50) / 100;
+   if      (((*w * 100) / *h) <  50) *w = (*h *  50) / 100;
    else if (((*w * 100) / *h) > 150) *w = (*h * 150) / 100;
    if (*w < minw) *w = minw;
    if (*h < minh) *h = minh;
@@ -286,6 +286,7 @@ _cb_file_selected(void *data, Evas_Object *obj, const char *sig EINA_UNUSED, con
    const char *file = evas_object_data_get(obj, "file");
 
    elm_layout_signal_emit(obj, "rage,state,selected", "rage");
+   evas_object_raise(obj);
    _activate(win, entry, file);
    snprintf(buf, sizeof(buf), "%s/%s", entry->path, file);
    if (selfile) free(selfile);
@@ -356,7 +357,10 @@ _entry_files_pop(Evas_Object *win, Entry *entry)
         evas_object_show(o);
 
         if ((entry->sel) && (entry->sel_x == i) && (entry->sel_y == j))
-          elm_layout_signal_emit(base, "rage,state,selected", "rage");
+          {
+             elm_layout_signal_emit(base, "rage,state,selected", "rage");
+             evas_object_raise(base);
+          }
 
         i++;
         if (i == entry->cols)
@@ -735,6 +739,7 @@ _sel_go(Evas_Object *win EINA_UNUSED, Entry *base_entry, int x, int y)
              entry->sel_y = 0;
              o = _sel_object_find(entry);
              elm_layout_signal_emit(o, "rage,state,selected", "rage");
+             evas_object_raise(o);
              eina_lock_release(&(entry->lock));
              eina_list_free(flatlist);
           }
@@ -784,7 +789,11 @@ _sel_go(Evas_Object *win EINA_UNUSED, Entry *base_entry, int x, int y)
                             o = _sel_object_find(entry);
                             if (o) elm_layout_signal_emit(o, "rage,state,unselected", "rage");
                             o = _sel_object_find(subentry);
-                            if (o) elm_layout_signal_emit(o, "rage,state,selected", "rage");
+                            if (o)
+                              {
+                                 elm_layout_signal_emit(o, "rage,state,selected", "rage");
+                                 evas_object_raise(o);
+                              }
                             elm_scroller_region_bring_in
                               (sc,
                                (tbx - bxx) + (subentry->sel_x * subentry->iw),
@@ -819,7 +828,11 @@ _sel_go(Evas_Object *win EINA_UNUSED, Entry *base_entry, int x, int y)
                             o = _sel_object_find(entry);
                             if (o) elm_layout_signal_emit(o, "rage,state,unselected", "rage");
                             o = _sel_object_find(subentry);
-                            if (o) elm_layout_signal_emit(o, "rage,state,selected", "rage");
+                            if (o)
+                              {
+                                 elm_layout_signal_emit(o, "rage,state,selected", "rage");
+                                 evas_object_raise(o);
+                              }
                             elm_scroller_region_bring_in
                               (sc,
                                (tbx - bxx) + (subentry->sel_x * subentry->iw),
@@ -838,7 +851,11 @@ _sel_go(Evas_Object *win EINA_UNUSED, Entry *base_entry, int x, int y)
              entry->sel_y = sel_y;
              evas_object_geometry_get(entry->table, &tbx, &tby, NULL, NULL);
              o = _sel_object_find(entry);
-             if (o) elm_layout_signal_emit(o, "rage,state,selected", "rage");
+             if (o)
+               {
+                  elm_layout_signal_emit(o, "rage,state,selected", "rage");
+                  evas_object_raise(o);
+               }
              elm_scroller_region_bring_in
                (sc,
                 (tbx - bxx) + (entry->sel_x * entry->iw),
@@ -879,6 +896,7 @@ _sel_do(Evas_Object *win, Entry *base_entry)
              char buf[PATH_MAX];
 
              elm_layout_signal_emit(o, "rage,state,selected", "rage");
+             evas_object_raise(o);
              _activate(win, entry, file);
              snprintf(buf, sizeof(buf), "%s/%s", entry->path, file);
              if (selfile) free(selfile);
