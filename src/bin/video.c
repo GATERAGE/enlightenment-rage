@@ -18,6 +18,7 @@ struct _Video
    const char *artfile;
    Ecore_Exe  *exe;
    Ecore_Event_Handler *exe_handler;
+   double volume;
    int w, h;
    int iw, ih, piw, pih, tw, th;
    int resizes;
@@ -723,6 +724,10 @@ video_play_set(Evas_Object *obj, Eina_Bool play)
 {
    Video *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
+
+   if (sd->volume)
+     video_volume_set(obj, sd->volume);
+
    emotion_object_play_set(sd->o_vid, play);
 }
 
@@ -892,6 +897,7 @@ video_volume_set(Evas_Object *obj, double vol)
    Video *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    emotion_object_audio_volume_set(sd->o_vid, vol);
+   sd->volume = vol;
    evas_object_smart_callback_call(obj, "audio", NULL);
 }
 
