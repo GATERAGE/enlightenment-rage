@@ -170,13 +170,6 @@ _cb_vid_resize(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED
 }
 
 static void
-_cb_vid_len_change(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
-{
-   Video *sd = evas_object_smart_data_get(data);
-   if (!sd) return;
-}
-
-static void
 _cb_restart(void *data)
 {
    Video *sd = evas_object_smart_data_get(data);
@@ -596,7 +589,6 @@ video_add(Evas_Object *parent)
      }
    evas_object_smart_callback_add(o, "frame_decode", _cb_vid_frame, obj);
    evas_object_smart_callback_add(o, "frame_resize", _cb_vid_resize, obj);
-   evas_object_smart_callback_add(o, "length_change", _cb_vid_len_change, obj);
    evas_object_smart_callback_add(o, "decode_stop", _cb_vid_stop, obj);
    evas_object_smart_callback_add(o, "progress_change", _cb_vid_progress, obj);
    evas_object_smart_callback_add(o, "ref_change", _cb_vid_ref, obj);
