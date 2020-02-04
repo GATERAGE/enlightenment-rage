@@ -36,6 +36,7 @@ struct _Entry
    Evas_Object *table;
    Evas_Object *sizer;
    Evas_Coord iw, ih;
+   Evas_Object **file_obj;
    int cols, rows;
    int sel_x, sel_y;
    Eina_Bool sel : 1;
@@ -58,6 +59,7 @@ static Entry *dir_entry = NULL;
 static Eina_List *entries = NULL;
 static Ecore_Timer *_browser_hide_focus_restore_timer = NULL;
 static Eina_Semaphore step_sema;
+static Ecore_Timer *initial_update_timer = NULL;
 
 static void _sel_go(Evas_Object *win EINA_UNUSED, Entry *base_entry, int x, int y);
 
@@ -294,74 +296,151 @@ _cb_file_selected(void *data, Evas_Object *obj, const char *sig EINA_UNUSED, con
 }
 
 static void
-_entry_files_pop(Evas_Object *win, Entry *entry)
+_entry_files_pop_clear(Entry *entry)
 {
-   Evas_Object *o, *base;
-   int i = 0, j = 0;
-   Eina_List *l;
+   int i, k;
+
+   // if we had any content at all before - nuke it all
+   if ((entry->sels) && (entry->file_obj))
+     {
+        entry->sels = eina_list_free(entry->sels);
+        k = entry->cols * entry->rows;
+        for (i = 0; i < k; i++)
+          {
+             if (entry->file_obj[i])
+               {
+                  evas_object_del(entry->file_obj[i]);
+                  entry->file_obj[i] = NULL;
+               }
+          }
+     }
+}
+
+static void
+_entry_files_pop_eval(Evas_Object *win, Entry *entry)
+{
    const char *file;
-   char buf[PATH_MAX], *p;
+   Eina_List *l;
+   Evas_Object **obj;
+   Evas_Coord win_w, win_h, ent_x, ent_y, ent_w, ent_h;
+   int i = 0, j = 0;
+   Eina_Rectangle win_rect, file_rect;
 
-   if (evas_object_data_get(entry->table, "populated")) return;
-   evas_object_data_set(entry->table, "populated", entry->table);
+   evas_object_geometry_get(entry->table, &ent_x, &ent_y, &ent_w, &ent_h);
+   evas_object_geometry_get(win, NULL, NULL, &win_w, &win_h);
+   win_rect.x = 0;
+   win_rect.y = 0;
+   win_rect.w = win_w;
+   win_rect.h = win_h;
 
+   // if we're not in the viewport at all empty all content
+   file_rect.x = ent_x;
+   file_rect.y = ent_y;
+   file_rect.w = ent_w;
+   file_rect.h = ent_h;
+   file_rect.x -= 80;
+   file_rect.y -= 80;
+   file_rect.w += 160;
+   file_rect.h += 160;
+   if (!eina_rectangles_intersect(&win_rect, &file_rect))
+     {
+        _entry_files_pop_clear(entry);
+        return;
+     }
+   // walk files to find which intersect the window
    EINA_LIST_FOREACH(entry->files, l, file)
      {
-        base = o = elm_layout_add(win);
-        entry->sels = eina_list_append(entry->sels, o);
-        evas_object_data_set(o, "entry", entry);
-        evas_object_data_set(o, "file", file);
-        elm_object_focus_allow_set(o, EINA_FALSE);
-        snprintf(buf, sizeof(buf), "%s/themes/default.edj", elm_app_data_dir_get());
-        elm_layout_file_set(o, buf, "rage/browser/item");
-        if (elm_win_fullscreen_get(win))
-          elm_layout_signal_emit(base, "state,fullscreen", "rage");
+        file_rect.x = ent_x + ((i * ent_w) / entry->cols);
+        file_rect.y = ent_y + ((j * ent_h) / entry->rows);
+        file_rect.w = (ent_w / entry->cols);
+        file_rect.h = (ent_h / entry->rows);
+        file_rect.x -= 80;
+        file_rect.y -= 80;
+        file_rect.w += 160;
+        file_rect.h += 160;
+        obj = &(entry->file_obj[(j * entry->cols) + i]);
+        if (eina_rectangles_intersect(&win_rect, &file_rect))
+          {
+             if (!(*obj))
+               {
+                  Evas_Object *o, *base;
+                  char buf[PATH_MAX], *p;
+
+                  base = o = elm_layout_add(win);
+                  *obj = o;
+                  entry->sels = eina_list_append(entry->sels, o);
+                  evas_object_data_set(o, "entry", entry);
+                  evas_object_data_set(o, "file", file);
+                  elm_object_focus_allow_set(o, EINA_FALSE);
+                  snprintf(buf, sizeof(buf), "%s/themes/default.edj",
+                           elm_app_data_dir_get());
+                  elm_layout_file_set(o, buf, "rage/browser/item");
+                  if (elm_win_fullscreen_get(win))
+                    elm_layout_signal_emit(base, "state,fullscreen", "rage");
+                  else
+                    elm_layout_signal_emit(base, "state,normal", "rage");
+                  snprintf(buf, sizeof(buf), "%s", file);
+                  for (p = buf; *p; p++)
+                    {
+                       // nuke stupid characters from the label that may be
+                       // in filename
+                       if ((*p == '_') || (*p == '#') || (*p == '$') ||
+                           (*p == '%') || (*p == '*') || (*p == '+') ||
+                           (*p == '[') || (*p == ']') || (*p == ';') ||
+                           (*p == '<') || (*p == '=') || (*p == '>') ||
+                           (*p == '^') || (*p == '`') || (*p == '{') ||
+                           (*p == '}') || (*p == '|') || (*p == '~') ||
+                           (*p == 127) || (*p == '\'') || (*p == '\\'))
+                         {
+                            *p = ' ';
+                         }
+                       else if (*p == '.')
+                         {
+                            *p = 0;
+                            break;
+                         }
+                    }
+                  elm_object_part_text_set(o, "rage.title", buf);
+                  evas_object_size_hint_weight_set(o, 0.0, 0.0);
+                  evas_object_size_hint_align_set(o,
+                                                  EVAS_HINT_FILL,
+                                                  EVAS_HINT_FILL);
+                  elm_table_pack(entry->table, o, i, j, 1, 1);
+                  evas_object_show(o);
+
+                  elm_layout_signal_callback_add(o, "rage,selected", "rage",
+                                                 _cb_file_selected, win);
+
+                  o = videothumb_add(win);
+                  videothumb_poster_mode_set(o, EINA_TRUE);
+                  evas_object_smart_callback_add(o, "data",
+                                                 _cb_vidthumb_data, base);
+                  evas_object_data_set(o, "entry", entry);
+                  evas_object_data_set(o, "file", file);
+                  snprintf(buf, sizeof(buf), "%s/%s", entry->path, file);
+                  videothumb_file_set(o, buf, 0.0);
+                  videothumb_autocycle_set(o, EINA_TRUE);
+                  elm_object_part_content_set(base, "rage.content", o);
+                  evas_object_show(o);
+
+                  if ((entry->sel) &&
+                      (entry->sel_x == i) && (entry->sel_y == j))
+                    {
+                       elm_layout_signal_emit(base, "rage,state,selected",
+                                              "rage");
+                       evas_object_raise(base);
+                    }
+               }
+          }
         else
-          elm_layout_signal_emit(base, "state,normal", "rage");
-        snprintf(buf, sizeof(buf), "%s", file);
-        for (p = buf; *p; p++)
           {
-             // nuke stupid characters from the label that may be in filename
-             if ((*p == '_') || (*p == '#') || (*p == '$') || (*p == '%') ||
-                 (*p == '*') || (*p == '+') || (*p == '[') || (*p == ']') ||
-                 (*p == ';') || (*p == '<') || (*p == '=') || (*p == '>') ||
-                 (*p == '^') || (*p == '`') || (*p == '{') || (*p == '}') ||
-                 (*p == '|') || (*p == '~') || (*p == 127) ||
-                 (*p == '\'') || (*p == '\\'))
+             if (*obj)
                {
-                  *p = ' ';
-               }
-             else if (*p == '.')
-               {
-                  *p = 0;
-                  break;
+                  entry->sels = eina_list_remove(entry->sels, *obj);
+                  evas_object_del(*obj);
+                  *obj = NULL;
                }
           }
-        elm_object_part_text_set(o, "rage.title", buf);
-        evas_object_size_hint_weight_set(o, 0.0, 0.0);
-        evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        elm_table_pack(entry->table, o, i, j, 1, 1);
-        evas_object_show(o);
-
-        elm_layout_signal_callback_add(o, "rage,selected", "rage", _cb_file_selected, win);
-
-        o = videothumb_add(win);
-        videothumb_poster_mode_set(o, EINA_TRUE);
-        evas_object_smart_callback_add(o, "data", _cb_vidthumb_data, base);
-        evas_object_data_set(o, "entry", entry);
-        evas_object_data_set(o, "file", file);
-        snprintf(buf, sizeof(buf), "%s/%s", entry->path, file);
-        videothumb_file_set(o, buf, 0.0);
-        videothumb_autocycle_set(o, EINA_TRUE);
-        elm_object_part_content_set(base, "rage.content", o);
-        evas_object_show(o);
-
-        if ((entry->sel) && (entry->sel_x == i) && (entry->sel_y == j))
-          {
-             elm_layout_signal_emit(base, "rage,state,selected", "rage");
-             evas_object_raise(base);
-          }
-
         i++;
         if (i == entry->cols)
           {
@@ -369,27 +448,14 @@ _entry_files_pop(Evas_Object *win, Entry *entry)
              j++;
           }
      }
-  if ((entry->cols > 0) && (entry->rows > 0))
-     elm_table_pack(entry->table, entry->sizer, 0, 0, entry->cols, entry->rows);
-   else
-     elm_table_pack(entry->table, entry->sizer, 0, 0, 1, 1);
 }
 
 static void
-_entry_files_unpop(Evas_Object *win EINA_UNUSED, Entry *entry)
+_entry_update(Evas_Object *win, Entry *entry)
 {
-   evas_object_size_hint_min_set(entry->sizer,
-                                 entry->cols * entry->iw,
-                                 entry->rows * entry->ih);
-   if (!evas_object_data_get(entry->table, "populated")) return;
-   entry->sels = eina_list_free(entry->sels);
-   evas_object_data_del(entry->table, "populated");
-   elm_table_unpack(entry->table, entry->sizer);
-   elm_table_clear(entry->table, EINA_TRUE);
-  if ((entry->cols > 0) && (entry->rows > 0))
-     elm_table_pack(entry->table, entry->sizer, 0, 0, entry->cols, entry->rows);
-   else
-     elm_table_pack(entry->table, entry->sizer, 0, 0, 1, 1);
+   eina_lock_take(&(entry->lock));
+   _entry_files_pop_eval(win, entry);
+   eina_lock_release(&(entry->lock));
 }
 
 static void
@@ -411,10 +477,8 @@ _entry_files_redo(Evas_Object *win, Entry *entry)
 {
    Evas_Coord x, y,w, h, iw = 1, ih = 1, ww, wh, sw, sh;
    int num, cols, rows;
-   Eina_Rectangle r1, r2;
 
    eina_lock_take(&(entry->lock));
-
    if (elm_win_fullscreen_get(win))
      elm_layout_signal_emit(entry->base, "state,fullscreen", "rage");
    else
@@ -426,6 +490,10 @@ _entry_files_redo(Evas_Object *win, Entry *entry)
    elm_scroller_region_get(sc, NULL, NULL, &sw, &sh);
    if (sw < w) w = sw;
 
+   _entry_files_pop_clear(entry);
+   free(entry->file_obj);
+   entry->file_obj = NULL;
+
    _item_size_get(win, &iw, &ih);
    cols = w / iw;
    if (cols < 1) cols = 1;
@@ -436,11 +504,17 @@ _entry_files_redo(Evas_Object *win, Entry *entry)
    entry->cols = cols;
    entry->rows = rows;
 
-   r1.x = 0; r1.y = 0; r1.w = ww; r1.h = wh;
-   r2.x = x; r2.y = y; r2.w = w; r2.h = h;
-
-   _entry_files_unpop(win, entry);
-   if (eina_rectangles_intersect(&r1, &r2)) _entry_files_pop(win, entry);
+   entry->file_obj = calloc(entry->cols * entry->rows,
+                            sizeof(Evas_Object *));
+   if ((entry->cols > 0) && (entry->rows > 0))
+     elm_table_pack(entry->table, entry->sizer, 0, 0,
+                    entry->cols, entry->rows);
+   else
+     elm_table_pack(entry->table, entry->sizer, 0, 0, 1, 1);
+   evas_object_size_hint_min_set(entry->sizer,
+                                 entry->cols * entry->iw,
+                                 entry->rows * entry->ih);
+   _entry_files_pop_eval(win, entry);
 
    if (selfile)
      {
@@ -471,32 +545,16 @@ _cb_entry_table_move(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *in
 {
    Entry *entry = data;
    Evas_Object *win = evas_object_data_get(obj, "win");
-   Evas_Coord x, y,w, h, ww, wh;
-   Eina_Rectangle r1, r2;
-
-   eina_lock_take(&(entry->lock));
-
-   evas_object_geometry_get(win, NULL, NULL, &ww, &wh);
-   evas_object_geometry_get(entry->table, &x, &y, &w, &h);
-   if (w < 40) goto done;
-
-   if (w > (ww - 20)) w = (ww - 20);
-
-   r1.x = 0; r1.y = 0; r1.w = ww; r1.h = wh;
-   r2.x = x; r2.y = y; r2.w = w; r2.h = h;
-
-   if (eina_rectangles_intersect(&r1, &r2)) _entry_files_pop(win, entry);
-   else _entry_files_unpop(win, entry);
-
-done:
-   eina_lock_release(&(entry->lock));
+   if (initial_update_timer) return;
+   _entry_update(win, entry);
 }
 
 static void
-_cb_entry_table_resize(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *info EINA_UNUSED)
+_cb_entry_table_resize(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj, void *info EINA_UNUSED)
 {
    Entry *entry = data;
    Evas_Object *win = evas_object_data_get(obj, "win");
+   if (initial_update_timer) return;
    _entry_files_redo(win, entry);
 }
 
@@ -506,12 +564,28 @@ _cb_scroller_resize(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSE
    Inf *inf = evas_object_data_get(data, "inf");
    Eina_List *l;
    Entry *entry;
-   if (!inf) return;
-   if (!bx) return;
+   if ((!inf) || (!bx)) return;
+   if (initial_update_timer) return;
    EINA_LIST_FOREACH(entries, l, entry)
      {
         _entry_files_redo(data, entry);
      }
+}
+
+static Eina_Bool
+_cb_initial_update_timer(void *data)
+{
+   Inf *inf = evas_object_data_get(data, "inf");
+   Eina_List *l;
+   Entry *entry;
+
+   initial_update_timer = NULL;
+   if ((!inf) || (!bx)) return EINA_FALSE;
+   EINA_LIST_FOREACH(entries, l, entry)
+     {
+        _entry_files_redo(data, entry);
+     }
+   return EINA_FALSE;
 }
 
 static void
@@ -575,7 +649,6 @@ _fill_feedback(void *data, Ecore_Thread *th, void *msg)
                        evas_object_color_set(o, 0, 0, 0, 0);
                        evas_object_size_hint_min_set(o, 10, 10);
                        elm_table_pack(entry->table, o, 0, 0, 1, 1);
-                       evas_object_show(o);
 
                        if ((!entry->parent) ||
                            ((entry->parent) && (!entry->parent->parent)) ||
@@ -584,6 +657,7 @@ _fill_feedback(void *data, Ecore_Thread *th, void *msg)
                        else
                          elm_box_pack_end(entry->parent->box, entry->base);
                        evas_object_show(entry->base);
+
                     }
                }
              entries = eina_list_append(entries, entry);
@@ -591,7 +665,36 @@ _fill_feedback(void *data, Ecore_Thread *th, void *msg)
           }
         else if ((message->type == TYPE_FINISH) && (entry->parent))
           {
-             _entry_files_redo(win, entry);
+             if (!initial_update_timer)
+               _entry_files_redo(win, entry);
+             else
+               {
+                  int iw, ih, cols, rows, num;
+                  Evas_Coord w, h;
+
+                  eina_lock_take(&(entry->lock));
+                  num = eina_list_count(entry->files);
+                  evas_object_geometry_get(entry->table, NULL, NULL, &w, &h);
+                  _item_size_get(win, &iw, &ih);
+                  cols = w / iw;
+                  if (cols < 1) cols = 1;
+                  rows = (num + (cols - 1)) / cols;
+
+                  entry->iw = iw - 1;
+                  entry->ih = ih - 1;
+                  entry->cols = cols;
+                  entry->rows = rows;
+
+                  evas_object_size_hint_min_set(entry->sizer,
+                                                entry->cols * entry->iw,
+                                                entry->rows * entry->ih);
+                  if ((entry->cols > 0) && (entry->rows > 0))
+                    elm_table_pack(entry->table, entry->sizer, 0, 0,
+                                   entry->cols, entry->rows);
+                  else
+                    elm_table_pack(entry->table, entry->sizer, 0, 0, 1, 1);
+                  eina_lock_release(&(entry->lock));
+               }
           }
      }
    // allow the freedback thread to step more
@@ -626,14 +729,15 @@ _entry_free(Entry *entry)
    if (!entry) return;
    eina_lock_take(&(entry->lock));
    entry->sels = eina_list_free(entry->sels);
+   free(entry->file_obj);
    EINA_LIST_FREE(entry->files, str) eina_stringshare_del(str);
    EINA_LIST_FREE(entry->dirs, subentry) _entry_free(subentry);
    if (entry->base) evas_object_del(entry->base);
    eina_stringshare_del(entry->path);
-   eina_lock_release(&(entry->lock));
-   eina_lock_free(&(entry->lock));
    if (entry == selentry) selentry = NULL;
    entries = eina_list_remove(entries, entry);
+   eina_lock_release(&(entry->lock));
+   eina_lock_free(&(entry->lock));
    free(entry);
 }
 
@@ -688,7 +792,8 @@ static Evas_Object *
 _sel_object_find(Entry *entry)
 {
    int num = (entry->sel_y * entry->cols) + entry->sel_x;
-   Evas_Object *o = eina_list_nth(entry->sels, num);
+   if (!entry->file_obj) return NULL;
+   Evas_Object *o = entry->file_obj[num];
    return o;
 }
 
@@ -1021,6 +1126,7 @@ browser_show(Evas_Object *win)
         focus_timer = ecore_timer_add(0.7, _browser_focus_timer_cb, bt);
      }
    elm_layout_signal_emit(inf->lay, "browser,state,visible", "rage");
+   initial_update_timer = ecore_timer_add(0.2, _cb_initial_update_timer, win);
 }
 
 static void
@@ -1054,6 +1160,11 @@ browser_hide(Evas_Object *win)
    Inf *inf = evas_object_data_get(win, "inf");
 
    if (!bx) return;
+   if (initial_update_timer)
+     {
+        ecore_timer_del(initial_update_timer);
+        initial_update_timer = NULL;
+     }
    if (focus_timer) ecore_timer_del(focus_timer);
    focus_timer = NULL;
    elm_layout_signal_callback_add(inf->lay, "browser,state,hidden,finished", "rage",
@@ -1078,10 +1189,10 @@ browser_size_update(Evas_Object *win)
    Entry *entry;
    if (!inf) return;
    if (!bx) return;
+   if (initial_update_timer) return;
    EINA_LIST_FOREACH(entries, l, entry)
      {
-        _cb_entry_table_move(entry, evas_object_evas_get(entry->table),
-                             entry->table, NULL);
+        _entry_files_redo(win, entry);
      }
 }
 
@@ -1093,6 +1204,7 @@ browser_fullscreen(Evas_Object *win, EINA_UNUSED Eina_Bool enabled)
    Entry *entry;
    if (!inf) return;
    if (!bx) return;
+   if (initial_update_timer) return;
    EINA_LIST_FOREACH(entries, l, entry)
      {
         _entry_files_redo(win, entry);
