@@ -477,14 +477,13 @@ collections {
          part { name: "browser2"; type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               rel2.relative: 1.0 0.0;
-               rel2.to_y: "controlbar";
                fixed: 1 1;
             }
             description { state: "fs" 0.0;
                inherit: "default" 0.0;
                rel1.offset: 40 0;
                rel2.offset: -41 -1;
+               offscale;
             }
          }
          part { name: "rage.browser"; type: SWALLOW;
