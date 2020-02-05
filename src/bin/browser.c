@@ -60,7 +60,13 @@ static Eina_List *entries = NULL;
 static Ecore_Timer *_browser_hide_focus_restore_timer = NULL;
 static Eina_Semaphore step_sema;
 static Ecore_Timer *initial_update_timer = NULL;
+static Ecore_Timer *pop_eval_redo = NULL;
 
+static const int max_created = 8;
+static const int max_destroyed = 16;
+
+static void _pop_eval_delay(Evas_Object *win, int created, int destroyed);
+static void _entry_files_pop_eval(Evas_Object *win, Entry *entry);
 static void _sel_go(Evas_Object *win EINA_UNUSED, Entry *base_entry, int x, int y);
 
 static void
@@ -298,21 +304,57 @@ _cb_file_selected(void *data, Evas_Object *obj, const char *sig EINA_UNUSED, con
 static void
 _entry_files_pop_clear(Entry *entry)
 {
-   int i, k;
+   Evas_Object *win = evas_object_data_get(entry->table, "win");
+   int i, k, destroyed = 0;
 
    // if we had any content at all before - nuke it all
    if ((entry->sels) && (entry->file_obj))
      {
-        entry->sels = eina_list_free(entry->sels);
         k = entry->cols * entry->rows;
         for (i = 0; i < k; i++)
           {
              if (entry->file_obj[i])
                {
+                  entry->sels = eina_list_remove(entry->sels, entry->file_obj[i]);
                   evas_object_del(entry->file_obj[i]);
                   entry->file_obj[i] = NULL;
+                  destroyed++;
+                  if (destroyed >= max_destroyed) break;
                }
           }
+        _pop_eval_delay(win, 0, destroyed);
+     }
+}
+
+static Eina_Bool
+_cb_pop_eval_redo(void *data)
+{
+   Evas_Object *win = data;
+   Inf *inf = evas_object_data_get(win, "inf");
+   Eina_List *l;
+   Entry *entry;
+   pop_eval_redo = NULL;
+   if (!inf) return EINA_FALSE;
+   if (!bx) return EINA_FALSE;
+   EINA_LIST_FOREACH(entries, l, entry)
+     {
+        if (pop_eval_redo) break;
+        _entry_files_pop_eval(win, entry);
+     }
+   return EINA_FALSE;
+}
+
+static void
+_pop_eval_delay(Evas_Object *win, int created, int destroyed)
+{
+   if ((created >= max_created) || (destroyed >= max_destroyed))
+     {
+        if (pop_eval_redo)
+          {
+             ecore_timer_del(pop_eval_redo);
+             pop_eval_redo = NULL;
+          }
+        pop_eval_redo = ecore_timer_add(0.01, _cb_pop_eval_redo, win);
      }
 }
 
@@ -323,9 +365,10 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
    Eina_List *l;
    Evas_Object **obj;
    Evas_Coord win_w, win_h, ent_x, ent_y, ent_w, ent_h;
-   int i = 0, j = 0;
+   int i = 0, j = 0, created = 0, destroyed = 0;
    Eina_Rectangle win_rect, file_rect;
 
+   if (pop_eval_redo) return;
    evas_object_geometry_get(entry->table, &ent_x, &ent_y, &ent_w, &ent_h);
    evas_object_geometry_get(win, NULL, NULL, &win_w, &win_h);
    win_rect.x = 0;
@@ -350,6 +393,7 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
    // walk files to find which intersect the window
    EINA_LIST_FOREACH(entry->files, l, file)
      {
+        if ((created >= max_created) && (destroyed >= max_destroyed)) break;
         file_rect.x = ent_x + ((i * ent_w) / entry->cols);
         file_rect.y = ent_y + ((j * ent_h) / entry->rows);
         file_rect.w = (ent_w / entry->cols);
@@ -361,7 +405,7 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
         obj = &(entry->file_obj[(j * entry->cols) + i]);
         if (eina_rectangles_intersect(&win_rect, &file_rect))
           {
-             if (!(*obj))
+             if ((!(*obj)) && (created < max_created))
                {
                   Evas_Object *o, *base;
                   char buf[PATH_MAX], *p;
@@ -430,15 +474,17 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
                                               "rage");
                        evas_object_raise(base);
                     }
+                  created++;
                }
           }
         else
           {
-             if (*obj)
+             if ((*obj) && (destroyed < max_destroyed))
                {
                   entry->sels = eina_list_remove(entry->sels, *obj);
                   evas_object_del(*obj);
                   *obj = NULL;
+                  destroyed++;
                }
           }
         i++;
@@ -448,6 +494,7 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
              j++;
           }
      }
+   _pop_eval_delay(win, created, destroyed);
 }
 
 static void
