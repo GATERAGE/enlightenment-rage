@@ -2,9 +2,7 @@ collections {
 
 #define CTRLSIZE 26
    group { name: "rage/core";
-      images.image: "pm_fill.png" COMP;
       images.image: "vg1.png" COMP;
-      images.image: "vg2.png" COMP;
 
       images.image: "shadow_circle_horiz.png" COMP;
       images.image: "shadow_circle_vert.png" COMP;
@@ -101,22 +99,10 @@ collections {
                color: 64 64 64 255;
             }
          }
-         part { name: "fill"; mouse_events: 0;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               image.normal: "pm_fill.png";
-               color: 56 56 56 255;
-               fill {
-                  size.relative: 0.0 0.0;
-                  size.offset: 256 256;
-               }
-            }
-         }
          part { name: "vg1"; mouse_events: 0;
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel2.relative: 1.0 0.0;
-               rel2.to: "vg2";
+               rel2.relative: 1.0 0.5;
                image.normal: "vg1.png";
                color: 64 64 64 255;
                fill {
@@ -128,20 +114,6 @@ collections {
             description { state: "focused" 0.0;
                inherit: "default" 0.0;
                color: 32 32 32 255;
-            }
-         }
-         part { name: "vg2"; mouse_events: 0;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 1.0;
-               image.normal: "vg2.png";
-               color: 64 64 64 255;
-               max: 99999 32;
-               fill {
-                  size.relative: 0.0 1.0;
-                  size.offset: 256 0;
-                  smooth: 0;
-               }
             }
          }
          program {
