@@ -48,6 +48,20 @@ typedef struct
    Evas_Object *win;
 } Fill_Data;
 
+#define CREATED_MAX      32
+#define DESTROYED_MAX    32
+#define NORMAL_COLS      12
+#define NORMAL_ROWS       4
+#define FULLSCREEN_COLS   6
+#define FULLSCREEN_ROWS   3
+// these gets scaled by scaling factor anyway...
+#define ITEM_MIN_W      100
+#define ITEM_MIN_H      100
+#define ITEM_MAX_W      140
+#define ITEM_MAX_H      140
+#define ITEM_ASPECT_MIN  50
+#define ITEM_ASPECT_MAX 150
+
 static char *selfile = NULL;
 static Entry *selentry = NULL;
 static int seli = 0;
@@ -60,10 +74,8 @@ static Eina_List *entries = NULL;
 static Ecore_Timer *_browser_hide_focus_restore_timer = NULL;
 static Eina_Semaphore step_sema;
 static Ecore_Timer *initial_update_timer = NULL;
-static Ecore_Timer *pop_eval_redo = NULL;
+static Ecore_Animator *pop_eval_redo = NULL;
 
-static const int max_created = 8;
-static const int max_destroyed = 16;
 
 static void _pop_eval_delay(Evas_Object *win, int created, int destroyed);
 static void _entry_files_pop_eval(Evas_Object *win, Entry *entry);
@@ -73,8 +85,8 @@ static void
 _item_size_get(Evas_Object *win, Evas_Coord *w, Evas_Coord *h)
 {
    Evas_Coord sz = 0;
-   Evas_Coord minw = 100, minh = 100;
-   Evas_Coord maxw = 140, maxh = 140;
+   Evas_Coord minw = ITEM_MIN_W, minh = ITEM_MIN_H;
+   Evas_Coord maxw = ITEM_MAX_W, maxh = ITEM_MAX_H;
 
    minw = elm_config_scale_get() * (double)minw;
    minh = elm_config_scale_get() * (double)minh;
@@ -84,22 +96,24 @@ _item_size_get(Evas_Object *win, Evas_Coord *w, Evas_Coord *h)
    evas_object_geometry_get(win, NULL, NULL, w, h);
    if (elm_win_fullscreen_get(win))
      {
-        *w = (double)(*w) / 6.0;
-        *h = (double)(*h) / 3.0;
+        *w = (double)(*w) / (double)FULLSCREEN_COLS;
+        *h = (double)(*h) / (double)FULLSCREEN_ROWS;
         maxw = 0;
         maxh = 0;
      }
    else
      {
-        *w = (double)(*w) / 12.0;
-        *h = (double)(*h) / 4.0;
+        *w = (double)(*w) / (double)NORMAL_COLS;
+        *h = (double)(*h) / (double)NORMAL_ROWS;
      }
    if (*w < minw) *w = minw;
    if (*h < minh) *h = minh;
    if ((maxw > 0) && (*w > maxw)) *w = maxw;
    if ((maxh > 0) && (*h > maxh)) *h = maxh;
-   if      (((*w * 100) / *h) <  50) *w = (*h *  50) / 100;
-   else if (((*w * 100) / *h) > 150) *w = (*h * 150) / 100;
+   if (((*w * 100) / *h) < ITEM_ASPECT_MIN)
+     *w = (*h * ITEM_ASPECT_MIN) / 100;
+   else if (((*w * 100) / *h) > ITEM_ASPECT_MAX)
+     *w = (*h * ITEM_ASPECT_MAX) / 100;
    if (*w < minw) *w = minw;
    if (*h < minh) *h = minh;
    if (*w < sz) *w = sz;
@@ -319,7 +333,7 @@ _entry_files_pop_clear(Entry *entry)
                   evas_object_del(entry->file_obj[i]);
                   entry->file_obj[i] = NULL;
                   destroyed++;
-                  if (destroyed >= max_destroyed) break;
+                  if (destroyed >= DESTROYED_MAX) break;
                }
           }
         _pop_eval_delay(win, 0, destroyed);
@@ -347,14 +361,14 @@ _cb_pop_eval_redo(void *data)
 static void
 _pop_eval_delay(Evas_Object *win, int created, int destroyed)
 {
-   if ((created >= max_created) || (destroyed >= max_destroyed))
+   if ((created >= CREATED_MAX) || (destroyed >= DESTROYED_MAX))
      {
         if (pop_eval_redo)
           {
-             ecore_timer_del(pop_eval_redo);
+             ecore_animator_del(pop_eval_redo);
              pop_eval_redo = NULL;
           }
-        pop_eval_redo = ecore_timer_add(0.01, _cb_pop_eval_redo, win);
+        pop_eval_redo = ecore_animator_add(_cb_pop_eval_redo, win);
      }
 }
 
@@ -393,7 +407,7 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
    // walk files to find which intersect the window
    EINA_LIST_FOREACH(entry->files, l, file)
      {
-        if ((created >= max_created) && (destroyed >= max_destroyed)) break;
+        if ((created >= CREATED_MAX) && (destroyed >= DESTROYED_MAX)) break;
         file_rect.x = ent_x + ((i * ent_w) / entry->cols);
         file_rect.y = ent_y + ((j * ent_h) / entry->rows);
         file_rect.w = (ent_w / entry->cols);
@@ -405,7 +419,7 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
         obj = &(entry->file_obj[(j * entry->cols) + i]);
         if (eina_rectangles_intersect(&win_rect, &file_rect))
           {
-             if ((!(*obj)) && (created < max_created))
+             if ((!(*obj)) && (created < CREATED_MAX))
                {
                   Evas_Object *o, *base;
                   char buf[PATH_MAX], *p;
@@ -479,7 +493,7 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
           }
         else
           {
-             if ((*obj) && (destroyed < max_destroyed))
+             if ((*obj) && (destroyed < DESTROYED_MAX))
                {
                   entry->sels = eina_list_remove(entry->sels, *obj);
                   evas_object_del(*obj);
