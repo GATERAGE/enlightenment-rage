@@ -350,14 +350,15 @@ albumart_file_get(const char *file)
 {
    char *tmp = alloca(strlen(file) + 1 + 100);
    char *dir, *fraw, *s;
-   const char *fname;
+   const char *fname, *e;
+   const char *ext[] = { "png", "PNG", "jpg", "JPG", "jpeg", "JPEG", "jpe", "JPE", NULL };
+   int i;
 
-   sprintf(tmp, "%s.png", file);
-   if (ecore_file_exists(tmp)) return strdup(tmp);
-   sprintf(tmp, "%s.jpg", file);
-   if (ecore_file_exists(tmp)) return strdup(tmp);
-   sprintf(tmp, "%s.jpeg", file);
-   if (ecore_file_exists(tmp)) return strdup(tmp);
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s.%s", file, e);
+        if (ecore_file_exists(tmp)) return strdup(tmp);
+     }
 
    dir = ecore_file_dir_get(file);
    if (!dir) dir = strdup(".");
@@ -376,45 +377,62 @@ albumart_file_get(const char *file)
    s = strrchr(fraw, '.');
    if (s) *s = 0;
 
-   sprintf(tmp, "%s/%s.png", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/%s.jpg", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/%s.jpeg", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/%s.%s", dir, fraw, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/.%s.%s", dir, fname, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/.%s.%s", dir, fraw, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/.thumb/%s.%s", dir, fname, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/.thumb/%s.%s", dir, fraw, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
 
-   sprintf(tmp, "%s/.%s.png", dir, fname);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.%s.jpg", dir, fname);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.%s.jpeg", dir, fname);
-   if (ecore_file_exists(tmp)) goto found;
-
-   sprintf(tmp, "%s/.%s.png", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.%s.jpg", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.%s.jpeg", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-
-   sprintf(tmp, "%s/.thumb/%s.png", dir, fname);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.thumb/%s.jpg", dir, fname);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.thumb/%s.jpeg", dir, fname);
-   if (ecore_file_exists(tmp)) goto found;
-
-   sprintf(tmp, "%s/.thumb/%s.png", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.thumb/%s.jpg", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/.thumb/%s.jpeg", dir, fraw);
-   if (ecore_file_exists(tmp)) goto found;
-
-   sprintf(tmp, "%s/cover.jpg", dir);
-   if (ecore_file_exists(tmp)) goto found;
-   sprintf(tmp, "%s/front.jpg", dir);
-   if (ecore_file_exists(tmp)) goto found;
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/cover.%s", dir, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/front.%s", dir, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/folder.%s", dir, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/.cover.%s", dir, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/.front.%s", dir, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
+   for (i = 0; (e = ext[i]) && e; i++)
+     {
+        sprintf(tmp, "%s/.folder.%s", dir, e);
+        if (ecore_file_exists(tmp)) goto found;
+     }
 
    free(dir);
    free(fraw);
