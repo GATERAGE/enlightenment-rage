@@ -350,9 +350,22 @@ albumart_file_get(const char *file)
 {
    char *tmp = alloca(strlen(file) + 1 + 100);
    char *dir, *fraw, *s;
-   const char *fname, *e;
-   const char *ext[] = { "png", "PNG", "jpg", "JPG", "jpeg", "JPEG", "jpe", "JPE", NULL };
-   int i;
+   const char *fname, *e, *c;
+   const char *ext[] = {
+      "png", "PNG",
+      "jpg", "JPG",
+      "jpeg", "JPEG",
+      "jpe", "JPE",
+      NULL };
+   const char *cover[] = {
+      "cover",   "Cover",   "COVER",
+      "front",   "Front",   "FRONT",
+      "folder",  "Folder",  "FOLDER",
+      ".cover",  ".Cover",  ".COVER",
+      ".front",  ".Front",  ".FRONT",
+      ".folder", ".Folder", ".FOLDER",
+      NULL };
+   int i, j;
 
    for (i = 0; (e = ext[i]) && e; i++)
      {
@@ -403,35 +416,13 @@ albumart_file_get(const char *file)
         if (ecore_file_exists(tmp)) goto found;
      }
 
-   for (i = 0; (e = ext[i]) && e; i++)
+   for (j = 0; (c = cover[j]) && c; j++)
      {
-        sprintf(tmp, "%s/cover.%s", dir, e);
-        if (ecore_file_exists(tmp)) goto found;
-     }
-   for (i = 0; (e = ext[i]) && e; i++)
-     {
-        sprintf(tmp, "%s/front.%s", dir, e);
-        if (ecore_file_exists(tmp)) goto found;
-     }
-   for (i = 0; (e = ext[i]) && e; i++)
-     {
-        sprintf(tmp, "%s/folder.%s", dir, e);
-        if (ecore_file_exists(tmp)) goto found;
-     }
-   for (i = 0; (e = ext[i]) && e; i++)
-     {
-        sprintf(tmp, "%s/.cover.%s", dir, e);
-        if (ecore_file_exists(tmp)) goto found;
-     }
-   for (i = 0; (e = ext[i]) && e; i++)
-     {
-        sprintf(tmp, "%s/.front.%s", dir, e);
-        if (ecore_file_exists(tmp)) goto found;
-     }
-   for (i = 0; (e = ext[i]) && e; i++)
-     {
-        sprintf(tmp, "%s/.folder.%s", dir, e);
-        if (ecore_file_exists(tmp)) goto found;
+        for (i = 0; (e = ext[i]) && e; i++)
+          {
+             sprintf(tmp, "%s/%s.%s", dir, c, e);
+             if (ecore_file_exists(tmp)) goto found;
+          }
      }
 
    free(dir);
