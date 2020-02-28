@@ -116,13 +116,11 @@ collections {
                color: 32 32 32 255;
             }
          }
-         program {
-            signal: "state,win,focused"; source: "rage";
+         program { signal: "state,win,focused"; source: "rage";
             action: STATE_SET "focused" 0.0;
             target: "vg1";
          }
-         program {
-            signal: "state,win,unfocused"; source: "rage";
+         program { signal: "state,win,unfocused"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "vg1";
          }
@@ -144,8 +142,7 @@ collections {
             scale: 1;
             clip_to: "shadow";
             description { state: "default" 0.0;
-               rel1.to: "rage.content";
-               rel2.to: "rage.content";
+               rel.to: "rage.content";
                rel2.relative: 1.0 0.0;
                image.normal: "shadow_circle_horiz.png";
                min: 0 32;
@@ -156,8 +153,7 @@ collections {
             scale: 1;
             clip_to: "shadow";
             description { state: "default" 0.0;
-               rel1.to: "rage.content";
-               rel2.to: "rage.content";
+               rel.to: "rage.content";
                rel1.relative: 0.0 1.0;
                image.normal: "shadow_circle_horiz.png";
                min: 0 32;
@@ -168,8 +164,7 @@ collections {
             scale: 1;
             clip_to: "shadow";
             description { state: "default" 0.0;
-               rel1.to: "rage.content";
-               rel2.to: "rage.content";
+               rel.to: "rage.content";
                rel2.relative: 0.0 1.0;
                image.normal: "shadow_circle_vert.png";
                min: 32 0;
@@ -180,8 +175,7 @@ collections {
             scale: 1;
             clip_to: "shadow";
             description { state: "default" 0.0;
-               rel1.to: "rage.content";
-               rel2.to: "rage.content";
+               rel.to: "rage.content";
                rel1.relative: 1.0 0.0;
                image.normal: "shadow_circle_vert.png";
                min: 32 0;
@@ -200,14 +194,12 @@ collections {
                visible: 1;
             }
          }
-         program {
-            signal: "state,win,fullscreen"; source: "rage";
+         program { signal: "state,win,fullscreen"; source: "rage";
             action: STATE_SET "visible" 0.0;
             transition: SINUSOIDAL 0.2;
             target: "black";
          }
-         program {
-            signal: "state,win,normal"; source: "rage";
+         program { signal: "state,win,normal"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: SINUSOIDAL 1.0;
             target: "black";
@@ -215,8 +207,7 @@ collections {
 
          part { name: "base"; type: RECT; mouse_events: 0;
             description { state: "default" 0.0;
-               rel1.to: "rage.content";
-               rel2.to: "rage.content";
+               rel.to: "rage.content";
                color: 0 0 0 255;
                visible: 0;
             }
@@ -233,8 +224,7 @@ collections {
             scale: 1;
             clip_to: "novid_clip";
             description { state: "default" 0.0;
-               rel1.to: "base";
-               rel2.to: "base";
+               rel.to: "base";
                fixed: 1 1;
                image.normal: "icon_exclamation.png";
                max: 24 24;
@@ -252,8 +242,7 @@ collections {
                visible: 0;
             }
          }
-         program {
-            signal: "action,newvid"; source: "rage";
+         program { signal: "action,newvid"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "exclam";
             target: "base";
@@ -266,8 +255,7 @@ collections {
             target: "exclam";
             target: "base";
          }
-         program {
-            signal: "action,frame"; source: "rage";
+         program { signal: "action,frame"; source: "rage";
             action: STATE_SET "play" 0.0;
             target: "exclam";
             target: "base";
@@ -297,8 +285,7 @@ collections {
             clip_to: "controlbar_shadow_clip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "controlbar";
-               rel2.to: "controlbar";
+               rel.to: "controlbar";
                rel2.relative: 1.0 0.0;
                image.normal: "shadow_circle_horiz.png";
                min: 0 32;
@@ -317,13 +304,11 @@ collections {
                min: 290 290;
             }
          }
-         program {
-            signal: "pref,size,on"; source: "rage";
+         program { signal: "pref,size,on"; source: "rage";
             action: STATE_SET "pref" 0.0;
             target: "prefsize";
          }
-         program {
-            signal: "pref,size,off"; source: "rage";
+         program { signal: "pref,size,off"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "prefsize";
          }
@@ -377,63 +362,54 @@ collections {
          part { name: "rage.art"; type: SWALLOW; mouse_events: 0;
             clip_to: "art_clip2";
             description { state: "default" 0.0;
-               rel1.to: "art_clip";
-               rel2.to: "art_clip";
+               rel.to: "art_clip";
             }
          }
-         program {
-            signal: "state,novideo"; source: "rage";
+         program { signal: "state,novideo"; source: "rage";
             action: STATE_SET "novideo" 0.0;
             target: "speaker_clip";
             target: "shadow";
             target: "statusloc";
             target: "rage.content";
          }
-         program {
-            signal: "state,default"; source: "rage";
+         program { signal: "state,default"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "speaker_clip";
             target: "shadow";
             target: "statusloc";
             target: "rage.content";
          }
-         program {
-            signal: "state,video"; source: "rage";
+         program { signal: "state,video"; source: "rage";
             action: STATE_SET "video" 0.0;
             target: "speaker_clip";
             target: "shadow";
             target: "statusloc";
             target: "rage.content";
          }
-         program {
-            signal: "state,novideo"; source: "rage";
+         program { signal: "state,novideo"; source: "rage";
             script {
                set_int(novideo, 1);
                pos_show();
             }
          }
-         program {
-            signal: "state,video"; source: "rage";
+         program { signal: "state,video"; source: "rage";
             script {
                set_int(novideo, 0);
                pos_show();
             }
          }
 
-         program {
-            signal: "action,newvid"; source: "rage";
+         program { signal: "action,newvid"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: ACCELERATE 0.2;
             target: "art_clip";
          }
-         program {
-            signal: "state,noart"; source: "rage";
+         program { signal: "state,noart"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: ACCELERATE 0.3;
             target: "art_clip";
          }
-         program {
-            signal: "state,art"; source: "rage";
+         program { signal: "state,art"; source: "rage";
             action: STATE_SET "visible" 0.0;
             transition: DECELERATE 0.3;
             target: "art_clip";
@@ -473,14 +449,12 @@ collections {
                visible: 1;
             }
          }
-         program {
-            signal: "browser,state,visible"; source: "rage";
+         program { signal: "browser,state,visible"; source: "rage";
             action: STATE_SET "visible" 0.0;
             transition: DECELERATE 0.3;
             target: "rage.browser";
          }
-         program {
-            signal: "browser,state,visible"; source: "rage";
+         program { signal: "browser,state,visible"; source: "rage";
             script {
                set_int(browser, 1);
                if (get_int(pos_visible)) {
@@ -490,8 +464,7 @@ collections {
                }
             }
          }
-         program {
-            signal: "browser,state,hidden"; source: "rage";
+         program { signal: "browser,state,hidden"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: ACCELERATE 0.5;
             target: "rage.browser";
@@ -507,13 +480,11 @@ collections {
                pos_show();
             }
          }
-         program {
-            signal: "state,win,fullscreen"; source: "rage";
+         program { signal: "state,win,fullscreen"; source: "rage";
             action: STATE_SET "fs" 0.0;
             target: "browser2";
          }
-         program {
-            signal: "state,win,normal"; source: "rage";
+         program { signal: "state,win,normal"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "browser2";
          }
@@ -532,14 +503,12 @@ collections {
                visible: 1;
             }
          }
-         program {
-            signal: "list,state,visible"; source: "rage";
+         program { signal: "list,state,visible"; source: "rage";
             action: STATE_SET "visible" 0.0;
             transition: DECELERATE 0.3;
             target: "rage.list";
          }
-         program {
-            signal: "list,state,hidden"; source: "rage";
+         program { signal: "list,state,hidden"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: ACCELERATE 0.5;
             target: "rage.list";
@@ -568,15 +537,14 @@ collections {
             description { state: "novideo" 0.0;
                inherit: "default" 0.0;
                color: 64 64 64 0;
+               visible: 0;
             }
          }
-         program {
-            signal: "state,novideo"; source: "rage";
+         program { signal: "state,novideo"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "controlbar";
          }
-         program {
-            signal: "state,video"; source: "rage";
+         program { signal: "state,video"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "controlbar";
          }
@@ -633,8 +601,7 @@ collections {
             scale: 1;
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.dragable.pos";
-               rel2.to: "rage.dragable.pos";
+               rel.to: "rage.dragable.pos";
                align: 0.5 1.0;
                min: CTRLSIZE CTRLSIZE;
             }
@@ -646,8 +613,7 @@ collections {
             dragable.events: "rage.dragable.pos";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.pos.swallow";
-               rel2.to: "rage.pos.swallow";
+               rel.to: "rage.pos.swallow";
                color: 0 0 0 0;
                min: CTRLSIZE CTRLSIZE;
                align: 0.5 1.0;
@@ -711,8 +677,7 @@ collections {
             clip_to: "controlbar_clip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.pos.prev.swallow";
-               rel2.to: "rage.pos.prev.swallow";
+               rel.to: "rage.pos.prev.swallow";
                image.normal: "icon_prev.png";
                min: CTRLSIZE CTRLSIZE; max: CTRLSIZE CTRLSIZE;
             }
@@ -723,18 +688,15 @@ collections {
          }
          part { name: "pos_prevev"; type: RECT;
             description { state: "default" 0.0;
-               rel1.to: "rage.pos.prev.swallow";
-               rel2.to: "rage.pos.prev.swallow";
+               rel.to: "rage.pos.prev.swallow";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "pos_prevev";
+         program { signal: "mouse,down,1"; source: "pos_prevev";
             action: STATE_SET "active" 0.0;
             target: "pos_prev";
          }
-         program {
-            signal: "mouse,up,1"; source: "pos_prevev";
+         program { signal: "mouse,up,1"; source: "pos_prevev";
             action: STATE_SET "default" 0.0;
             target: "pos_prev";
          }
@@ -762,8 +724,7 @@ collections {
             clip_to: "playpause";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.pos.play.swallow";
-               rel2.to: "rage.pos.play.swallow";
+               rel.to: "rage.pos.play.swallow";
                image.normal: "icon_play.png";
                min: CTRLSIZE CTRLSIZE; max: CTRLSIZE CTRLSIZE;
             }
@@ -775,18 +736,15 @@ collections {
          part { name: "pos_pauseev"; type: RECT;
             clip_to: "playpause";
             description { state: "default" 0.0;
-               rel1.to: "rage.pos.play.swallow";
-               rel2.to: "rage.pos.play.swallow";
+               rel.to: "rage.pos.play.swallow";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "pos_pauseev";
+         program { signal: "mouse,down,1"; source: "pos_pauseev";
             action: STATE_SET "active" 0.0;
             target: "pos_pause";
          }
-         program {
-            signal: "mouse,up,1"; source: "pos_pauseev";
+         program { signal: "mouse,up,1"; source: "pos_pauseev";
             action: STATE_SET "default" 0.0;
             target: "pos_pause";
          }
@@ -795,8 +753,7 @@ collections {
             clip_to: "playpause2";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.pos.play.swallow";
-               rel2.to: "rage.pos.play.swallow";
+               rel.to: "rage.pos.play.swallow";
                min: CTRLSIZE CTRLSIZE; max: CTRLSIZE CTRLSIZE;
                image.normal: "icon_pause.png";
             }
@@ -808,30 +765,25 @@ collections {
          part { name: "pos_playev"; type: RECT;
             clip_to: "playpause2";
             description { state: "default" 0.0;
-               rel1.to: "rage.pos.play.swallow";
-               rel2.to: "rage.pos.play.swallow";
+               rel.to: "rage.pos.play.swallow";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "pos_playev";
+         program { signal: "mouse,down,1"; source: "pos_playev";
             action: STATE_SET "active" 0.0;
             target: "pos_play";
          }
-         program {
-            signal: "mouse,up,1"; source: "pos_playev";
+         program { signal: "mouse,up,1"; source: "pos_playev";
             action: STATE_SET "default" 0.0;
             target: "pos_play";
          }
 
-         program {
-            signal: "action,play"; source: "rage";
+         program { signal: "action,play"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "playpause";
             target: "playpause2";
          }
-         program {
-            signal: "action,pause"; source: "rage";
+         program { signal: "action,pause"; source: "rage";
             action: STATE_SET "pause" 0.0;
             target: "playpause";
             target: "playpause2";
@@ -841,8 +793,7 @@ collections {
             clip_to: "controlbar_clip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.pos.next.swallow";
-               rel2.to: "rage.pos.next.swallow";
+               rel.to: "rage.pos.next.swallow";
                image.normal: "icon_next.png";
                min: CTRLSIZE CTRLSIZE; max: CTRLSIZE CTRLSIZE;
             }
@@ -853,18 +804,15 @@ collections {
          }
          part { name: "pos_nextev"; type: RECT;
             description { state: "default" 0.0;
-               rel1.to: "rage.pos.next.swallow";
-               rel2.to: "rage.pos.next.swallow";
+               rel.to: "rage.pos.next.swallow";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "pos_nextev";
+         program { signal: "mouse,down,1"; source: "pos_nextev";
             action: STATE_SET "active" 0.0;
             target: "pos_next";
          }
-         program {
-            signal: "mouse,up,1"; source: "pos_nextev";
+         program { signal: "mouse,up,1"; source: "pos_nextev";
             action: STATE_SET "default" 0.0;
             target: "pos_next";
          }
@@ -887,14 +835,12 @@ collections {
                visible: 1;
             }
          }
-         program {
-            signal: "action,mute"; source: "rage";
+         program { signal: "action,mute"; source: "rage";
             action: STATE_SET "mute" 0.0;
             target: "volmuteb";
             target: "volmuteb2";
          }
-         program {
-            signal: "action,unmute"; source: "rage";
+         program { signal: "action,unmute"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "volmuteb";
             target: "volmuteb2";
@@ -904,8 +850,7 @@ collections {
             clip_to: "volmuteb";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.vol.swallow";
-               rel2.to: "rage.vol.swallow";
+               rel.to: "rage.vol.swallow";
                rel2.relative: 0.0 1.0;
                align: 1.0 0.5;
                image.normal: "icon_volume.png";
@@ -920,8 +865,7 @@ collections {
             clip_to: "volmuteb2";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.vol.swallow";
-               rel2.to: "rage.vol.swallow";
+               rel.to: "rage.vol.swallow";
                rel2.relative: 0.0 1.0;
                align: 1.0 0.5;
                image.normal: "icon_mute.png";
@@ -935,64 +879,52 @@ collections {
          part { name: "volev"; type: RECT;
             clip_to: "controlbar_clip";
             description { state: "default" 0.0;
-               rel1.to: "vol";
-               rel2.to: "vol";
-              color: 0 0 0 0;
+               rel.to: "vol";
+               color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "volev";
+         program { signal: "mouse,down,1"; source: "volev";
             action: STATE_SET "active" 0.0;
             target: "vol";
             target: "vol2";
          }
-         program {
-            signal: "mouse,up,1"; source: "volev";
+         program { signal: "mouse,up,1"; source: "volev";
             action: STATE_SET "default" 0.0;
             target: "vol";
             target: "vol2";
          }
-         program {
-            signal: "mouse,clicked,1"; source: "volev";
+         program { signal: "mouse,clicked,1"; source: "volev";
             action: SIGNAL_EMIT "pos,action,vol" "rage";
          }
 
-         program {
-            signal: "mouse,clicked,1"; source: "optev";
+         program { signal: "mouse,clicked,1"; source: "optev";
             action: SIGNAL_EMIT "pos,action,options" "rage";
          }
 
-         program {
-            signal: "mouse,clicked,1"; source: "fullscreenev";
+         program { signal: "mouse,clicked,1"; source: "fullscreenev";
             action: SIGNAL_EMIT "win,fullscreen" "rage";
          }
-         program {
-            signal: "mouse,clicked,1"; source: "unfullscreenev";
+         program { signal: "mouse,clicked,1"; source: "unfullscreenev";
             action: SIGNAL_EMIT "win,unfullscreen" "rage";
          }
 
-         program {
-            signal: "mouse,clicked,1"; source: "closeev";
+         program { signal: "mouse,clicked,1"; source: "closeev";
             action: SIGNAL_EMIT "win,close" "rage";
          }
 
-         program {
-            signal: "mouse,clicked,1"; source: "pos_prevev";
+         program { signal: "mouse,clicked,1"; source: "pos_prevev";
             action: SIGNAL_EMIT "pos,action,prev" "rage";
          }
-         program {
-            signal: "mouse,clicked,1"; source: "pos_nextev";
+         program { signal: "mouse,clicked,1"; source: "pos_nextev";
             action: SIGNAL_EMIT "pos,action,next" "rage";
          }
-         program {
-            signal: "mouse,clicked,1"; source: "pos_playev";
+         program { signal: "mouse,clicked,1"; source: "pos_playev";
             action: SIGNAL_EMIT "pos,action,pause" "rage";
          }
-         program {
-            signal: "mouse,clicked,1"; source: "pos_pauseev";
+         program { signal: "mouse,clicked,1"; source: "pos_pauseev";
             action: SIGNAL_EMIT "pos,action,play" "rage";
          }
-         
+
          part { name: "rage.pos"; type: TEXT; mouse_events: 0;
             clip_to: "controlbar_clip";
             scale: 1;
@@ -1058,8 +990,7 @@ collections {
          }
 
 #define STATE_FADE_PROG(_name, _part) \
-         program { \
-            signal: "action,"_name; source: "rage"; \
+         program { signal: "action,"_name; source: "rage"; \
             action: STATE_SET "visible" 0.0; \
             transition: SINUSOIDAL 0.2 CURRENT; \
             target: _part; \
@@ -1096,10 +1027,9 @@ collections {
             scale: 1;
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "mute";
+               rel.to: "mute";
                rel1.relative: 0.0 1.0;
                rel1.offset: 0 4;
-               rel2.to: "mute";
                rel2.relative: 0.0 1.0;
                rel2.offset: 0 4;
                align: 0.0 0.0;
@@ -1200,15 +1130,13 @@ collections {
 
          part { name: "statusloc"; type: SPACER;
             description { state: "default" 0.0;
-               rel1.to: "rage.content";
-               rel2.to: "rage.content";
+               rel.to: "rage.content";
             }
             description { state: "video" 0.0;
                inherit: "default" 0.0;
             }
             description { state: "novideo" 0.0;
-               rel1.to: "rage.art";
-               rel2.to: "rage.art";
+               rel.to: "rage.art";
             }
          }
          part { name: "play"; mouse_events: 0;
@@ -1217,8 +1145,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_play.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1238,8 +1165,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_pause.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1259,8 +1185,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_stop.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1280,8 +1205,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_eject.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1301,8 +1225,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_forward.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1322,8 +1245,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_next.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1343,8 +1265,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_rewind.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1364,8 +1285,7 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
-               rel1.to: "statusloc";
-               rel2.to: "statusloc";
+               rel.to: "statusloc";
                image.normal: "icon_prev.png";
                min: 40 40; max: 40 40;
                aspect: 1.0 1.0; aspect_preference: BOTH;
@@ -1386,10 +1306,9 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.0 0.0;
                rel1.offset: -1 0;
-               rel1.to: "rage.win.fullscreen";
+               rel.to: "rage.win.fullscreen";
                rel2.relative: 0.0 1.0;
                rel2.offset: -1 -1;
-               rel2.to: "rage.win.fullscreen";
                min: 20 20;
                align: 1.0 0.0;
             }
@@ -1400,10 +1319,9 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.0 0.0;
                rel1.offset: -1 0;
-               rel1.to: "rage.win.close";
+               rel.to: "rage.win.close";
                rel2.relative: 0.0 1.0;
                rel2.offset: -1 -1;
-               rel2.to: "rage.win.close";
                min: 20 20;
                align: 1.0 0.0;
             }
@@ -1435,8 +1353,7 @@ collections {
             clip_to: "posclip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.win.close";
-               rel2.to: "rage.win.close";
+               rel.to: "rage.win.close";
                image.normal: "icon_close.png";
                min: 20 20; max: 20 20;
             }
@@ -1447,18 +1364,15 @@ collections {
          }
          part { name: "closeev"; type: RECT;
             description { state: "default" 0.0;
-               rel1.to: "rage.win.close";
-               rel2.to: "rage.win.close";
+               rel.to: "rage.win.close";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "closeev";
+         program { signal: "mouse,down,1"; source: "closeev";
             action: STATE_SET "active" 0.0;
             target: "close";
          }
-         program {
-            signal: "mouse,up,1"; source: "closeev";
+         program { signal: "mouse,up,1"; source: "closeev";
             action: STATE_SET "default" 0.0;
             target: "close";
          }
@@ -1466,8 +1380,7 @@ collections {
          part { name: "fullscreenclip"; type: RECT;
             clip_to: "posclip";
             description { state: "default" 0.0;
-               rel1.to: "fullscreen";
-               rel2.to: "fullscreen";
+               rel.to: "fullscreen";
                visible: 1;
             }
             description { state: "fullscreen" 0.0;
@@ -1478,8 +1391,7 @@ collections {
          part { name: "unfullscreenclip"; type: RECT;
             clip_to: "posclip";
             description { state: "default" 0.0;
-               rel1.to: "unfullscreen";
-               rel2.to: "unfullscreen";
+               rel.to: "unfullscreen";
                visible: 0;
             }
             description { state: "fullscreen" 0.0;
@@ -1487,15 +1399,13 @@ collections {
                visible: 1;
             }
          }
-         program {
-            signal: "state,win,fullscreen"; source: "rage";
+         program { signal: "state,win,fullscreen"; source: "rage";
             action: STATE_SET "fullscreen" 0.0;
             target: "fullscreenclip";
             target: "unfullscreenclip";
             target: "rage.win.close";
          }
-         program {
-            signal: "state,win,normal"; source: "rage";
+         program { signal: "state,win,normal"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "fullscreenclip";
             target: "unfullscreenclip";
@@ -1506,8 +1416,7 @@ collections {
             clip_to: "fullscreenclip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.win.fullscreen";
-               rel2.to: "rage.win.fullscreen";
+               rel.to: "rage.win.fullscreen";
                image.normal: "icon_fullscreen.png";
                min: 20 20; max: 20 20;
             }
@@ -1519,18 +1428,15 @@ collections {
          part { name: "fullscreenev"; type: RECT;
             clip_to: "fullscreenclip";
             description { state: "default" 0.0;
-               rel1.to: "rage.win.fullscreen";
-               rel2.to: "rage.win.fullscreen";
+               rel.to: "rage.win.fullscreen";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "fullscreenev";
+         program { signal: "mouse,down,1"; source: "fullscreenev";
             action: STATE_SET "active" 0.0;
             target: "fullscreen";
          }
-         program {
-            signal: "mouse,up,1"; source: "fullscreenev";
+         program { signal: "mouse,up,1"; source: "fullscreenev";
             action: STATE_SET "default" 0.0;
             target: "fullscreen";
          }
@@ -1539,8 +1445,7 @@ collections {
             clip_to: "unfullscreenclip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.win.fullscreen";
-               rel2.to: "rage.win.fullscreen";
+               rel.to: "rage.win.fullscreen";
                image.normal: "icon_unfullscreen.png";
                min: 20 20; max: 20 20;
             }
@@ -1552,18 +1457,15 @@ collections {
          part { name: "unfullscreenev"; type: RECT;
             clip_to: "unfullscreenclip";
             description { state: "default" 0.0;
-               rel1.to: "rage.win.fullscreen";
-               rel2.to: "rage.win.fullscreen";
+               rel.to: "rage.win.fullscreen";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "unfullscreenev";
+         program { signal: "mouse,down,1"; source: "unfullscreenev";
             action: STATE_SET "active" 0.0;
             target: "unfullscreen";
          }
-         program {
-            signal: "mouse,up,1"; source: "unfullscreenev";
+         program { signal: "mouse,up,1"; source: "unfullscreenev";
             action: STATE_SET "default" 0.0;
             target: "unfullscreen";
          }
@@ -1573,8 +1475,7 @@ collections {
             clip_to: "posclip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.options.swallow";
-               rel2.to: "rage.options.swallow";
+               rel.to: "rage.options.swallow";
                image.normal: "icon_spanner.png";
                min: 20 20; max: 20 20;
             }
@@ -1585,18 +1486,15 @@ collections {
          }
          part { name: "optev"; type: RECT;
             description { state: "default" 0.0;
-               rel1.to: "rage.options.swallow";
-               rel2.to: "rage.options.swallow";
+               rel.to: "rage.options.swallow";
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,down,1"; source: "optev";
+         program { signal: "mouse,down,1"; source: "optev";
             action: STATE_SET "active" 0.0;
             target: "opt";
          }
-         program {
-            signal: "mouse,up,1"; source: "optev";
+         program { signal: "mouse,up,1"; source: "optev";
             action: STATE_SET "default" 0.0;
             target: "opt";
          }
@@ -1610,13 +1508,11 @@ collections {
                visible: 0;
             }
          }
-         program {
-            signal: "state,novideo"; source: "rage";
+         program { signal: "state,novideo"; source: "rage";
             action: STATE_SET "novideo" 0.0;
             target: "dragover_master";
          }
-         program {
-            signal: "state,video"; source: "rage";
+         program { signal: "state,video"; source: "rage";
             action: STATE_SET "default" 0.0;
             target: "dragover_master";
          }
@@ -1641,23 +1537,20 @@ collections {
                fixed: 1 1;
             }
          }
-         program {
-            signal: "mouse,in"; source: "dragover_event";
+         program { signal: "mouse,in"; source: "dragover_event";
             action: STATE_SET "visible" 0.0;
             transition: SINUSOIDAL 0.5;
             target: "dragover_active";
          }
-         program {
-            signal: "mouse,out"; source: "dragover_event";
+         program { signal: "mouse,out"; source: "dragover_event";
             action: STATE_SET "default" 0.0;
             transition: SINUSOIDAL 1.0;
             target: "dragover_active";
          }
          part { name: "dragover"; type: SPACER;
             description { state: "default" 0.0;
-               rel1.to: "dragover_event";
+               rel.to: "dragover_event";
                rel1.relative: 0.5 0.0;
-               rel2.to: "dragover_event";
                rel2.relative: 0.5 0.0;
                fixed: 1 1;
             }
@@ -1666,8 +1559,7 @@ collections {
             clip_to: "dragover_active";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "rage.dragable.content";
-               rel2.to: "rage.dragable.content";
+               rel.to: "rage.dragable.content";
                color: 255 255 255 128;
                image.normal: "win_shadow.png";
                image.border: 14 14 14 14;
@@ -1682,21 +1574,18 @@ collections {
             description { state: "default" 0.0;
                fixed: 1 1;
                color: 32 32 32 255;
-               rel1.to: "rage.dragable.content";
-               rel2.to: "rage.dragable.content";
+               rel.to: "rage.dragable.content";
             }
          }
          part { name: "rage.dragable.content"; type: SWALLOW; mouse_events: 0;
             clip_to: "dragover_active";
             description { state: "default" 0.0;
-               rel1.to: "dragover";
-               rel2.to: "dragover";
+               rel.to: "dragover";
                align: 0.5 1.0;
                fixed: 1 1;
             }
          }
-         program { name: "dragmove";
-            signal: "mouse,move"; source: "dragover_event";
+         program { signal: "mouse,move"; source: "dragover_event";
             script {
                new mx, my, x, y, w, h;
                new Float:pos, Float:px, Float:pw;
@@ -1718,8 +1607,7 @@ collections {
                  send_message(MSG_FLOAT, 10, pos);
             }
          }
-         program { name: "dragdown";
-            signal: "mouse,down,1"; source: "dragover_event";
+         program { signal: "mouse,down,1"; source: "dragover_event";
             script {
                new mx, my, x, y, w, h;
                new Float:pos, Float:px, Float:pw;
@@ -1740,8 +1628,7 @@ collections {
                send_message(MSG_FLOAT, 10, pos);
             }
          }
-         program { name: "dragup";
-            signal: "mouse,up,1"; source: "dragover_event";
+         program { signal: "mouse,up,1"; source: "dragover_event";
             script {
                set_int(drag_is_down, 0);
             }
@@ -1751,8 +1638,8 @@ collections {
                color: 0 0 0 0;
             }
          }
-         program { // mouse moves around causing control bar to show until idle
-            signal: "mouse,move"; source: "event";
+         program { signal: "mouse,move"; source: "event";
+            // mouse moves around causing control bar to show until idle
             script {
                pos_show();
             }
@@ -1792,41 +1679,32 @@ collections {
                rel2.relative: 0.8 1.0;
             }
          }
-         program {
-            signal: "mouse,in"; source: "listevent";
+         program { signal: "mouse,in"; source: "listevent";
             action: SIGNAL_EMIT "list,show" "rage";
          }
-         program {
-            signal: "mouse,in"; source: "listevent2";
+         program { signal: "mouse,in"; source: "listevent2";
             action: SIGNAL_EMIT "list,hide" "rage";
          }
 
-         program {
-            signal: "action,newvid"; source: "rage";
+         program { signal: "action,newvid"; source: "rage";
             action: SIGNAL_EMIT "mouse,move" "event";
          }
-         program {
-            signal: "action,rewind"; source: "rage";
+         program { signal: "action,rewind"; source: "rage";
             action: SIGNAL_EMIT "mouse,move" "event";
          }
-         program {
-            signal: "action,forward"; source: "rage";
+         program { signal: "action,forward"; source: "rage";
             action: SIGNAL_EMIT "mouse,move" "event";
          }
-         program {
-            signal: "action,next"; source: "rage";
+         program { signal: "action,next"; source: "rage";
             action: SIGNAL_EMIT "mouse,move" "event";
          }
-         program {
-            signal: "action,prev"; source: "rage";
+         program { signal: "action,prev"; source: "rage";
             action: SIGNAL_EMIT "mouse,move" "event";
          }
-         program {
-            signal: "action,play"; source: "rage";
+         program { signal: "action,play"; source: "rage";
             action: SIGNAL_EMIT "mouse,move" "event";
          }
-         program {
-            signal: "action,pause"; source: "rage";
+         program { signal: "action,pause"; source: "rage";
             action: SIGNAL_EMIT "mouse,move" "event";
          }
 
@@ -1838,9 +1716,8 @@ collections {
          part { name: "tv-bg";
             clip_to: "tv-clip";
             description { state: "default" 0.0;
-               rel1.to: "tv";
+               rel.to: "tv";
                rel1.relative: (40/256) (120/256);
-               rel2.to: "tv";
                rel2.relative: (174/256) (222/256);
                image.normal: "tv-bg.png";
             }
@@ -1848,8 +1725,7 @@ collections {
          part { name: "tv-anim";
             clip_to: "tv-clip";
             description { state: "default" 0.0;
-               rel1.to: "tv-bg";
-               rel2.to: "tv-bg";
+               rel.to: "tv-bg";
                image.tween: "r-4.png";
                image.tween: "r-3.png";
                image.tween: "r-2.png";
@@ -1865,8 +1741,7 @@ collections {
                image.normal: "tv-over.png";
             }
          }
-         program {
-            signal: "mouse,clicked,1"; source: "tv";
+         program { signal: "mouse,clicked,1"; source: "tv";
             action: SIGNAL_EMIT "about,hide" "rage";
          }
          part { name: "tv-clip"; type: RECT;
@@ -1879,14 +1754,12 @@ collections {
                color: 255 255 255 255;
             }
          }
-         program {
-            signal: "about,show"; source: "rage";
+         program { signal: "about,show"; source: "rage";
             action: STATE_SET "visible" 0.0;
             transition: SINUSOIDAL 0.5;
             target: "tv-clip";
          }
-         program {
-            signal: "about,hide"; source: "rage";
+         program { signal: "about,hide"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: SINUSOIDAL 1.0;
             target: "tv-clip";
@@ -1917,8 +1790,7 @@ collections {
          part { name: "shadow"; mouse_events: 0;
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
                color: 255 255 255 128;
                image.normal: "win_shadow.png";
                image.border: 14 14 14 14;
@@ -1930,8 +1802,7 @@ collections {
          }
          part { name: "glow"; type: RECT; mouse_events: 0;
             description { state: "default" 0.0;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
                color: 51 153 255 0;
                visible: 0;
             }
@@ -1943,14 +1814,12 @@ collections {
                visible: 1;
             }
          }
-         program {
-            signal: "rage,state,selected"; source: "rage";
+         program { signal: "rage,state,selected"; source: "rage";
             action: STATE_SET "selected" 0.0;
             transition: SINUSOIDAL 0.1;
             target: "glow";
          }
-         program {
-            signal: "rage,state,unselected"; source: "rage";
+         program { signal: "rage,state,unselected"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: SINUSOIDAL 0.3;
             target: "glow";
@@ -1959,8 +1828,7 @@ collections {
          part { name: "base"; type: RECT; mouse_events: 0;
             description { state: "default" 0.0;
                color: 32 32 32 255;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
             }
          }
          part { name: "clip"; type: RECT;
@@ -1972,15 +1840,13 @@ collections {
          part { name: "rage.sizer"; type: SWALLOW;
             description { state: "default" 0.0;
                min: 16 16;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
             }
          }
          part { name: "rage.content"; type: SWALLOW;
             clip_to: "clip";
             description { state: "default" 0.0;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
             }
          }
          part { name: "rage.title"; type: TEXT; mouse_events: 0;
@@ -1988,9 +1854,8 @@ collections {
             description { state: "default" 0.0;
                fixed: 1 1;
                align: 0.0 1.0;
-               rel1.to: "clip";
+               rel.to: "clip";
                rel1.offset: 4 4;
-               rel2.to: "clip";
                rel2.offset: -5 -5;
                color: 255 255 255 255;
                text { font: "Sans"; size: 8;
@@ -2006,8 +1871,7 @@ collections {
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,clicked,1"; source: "event";
+         program { signal: "mouse,clicked,1"; source: "event";
             action: SIGNAL_EMIT "rage,selected" "rage";
          }
       }
@@ -2091,8 +1955,7 @@ collections {
          part { name: "shadow"; mouse_events: 0;
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
                color: 255 255 255 128;
                image.normal: "win_shadow.png";
                image.border: 14 14 14 14;
@@ -2105,8 +1968,7 @@ collections {
          part { name: "base"; type: RECT; mouse_events: 0;
             description { state: "default" 0.0;
                color: 0 0 0 255;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
             }
          }
 
@@ -2122,8 +1984,7 @@ collections {
          part { name: "rage.content"; type: SWALLOW;
             clip_to: "clip";
             description { state: "default" 0.0;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
             }
          }
          part { name: "dimmer"; mouse_events: 0;
@@ -2131,8 +1992,7 @@ collections {
             description { state: "default" 0.0;
                image.normal: "dimmer.png";
                fill.smooth: 0;
-               rel1.to: "clip";
-               rel2.to: "clip";
+               rel.to: "clip";
             }
          }
          part { name: "rage.title"; type: TEXTBLOCK; mouse_events: 0;
@@ -2142,9 +2002,8 @@ collections {
                fixed: 1 1;
                align: 0.0 1.0;
                rel1.offset: 5 5;
-               rel1.to: "clip";
+               rel.to: "clip";
                rel2.offset: -6 -10;
-               rel2.to: "clip";
                color: 255 255 255 255;
                text { font: "Sans"; size: 20;
                   style: "browser_item_label";
@@ -2177,15 +2036,13 @@ collections {
                visible: 1;
             }
          }
-         program {
-            signal: "rage,state,selected"; source: "rage";
+         program { signal: "rage,state,selected"; source: "rage";
             action: STATE_SET "selected" 0.0;
             transition: SINUSOIDAL 0.1;
             target: "glow";
             target: "clip";
          }
-         program {
-            signal: "rage,state,unselected"; source: "rage";
+         program { signal: "rage,state,unselected"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: SINUSOIDAL 0.3;
             target: "glow";
@@ -2197,8 +2054,7 @@ collections {
                color: 0 0 0 0;
             }
          }
-         program {
-            signal: "mouse,clicked,1"; source: "event";
+         program { signal: "mouse,clicked,1"; source: "event";
             action: SIGNAL_EMIT "rage,selected" "rage";
          }
       }
