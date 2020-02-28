@@ -161,7 +161,6 @@ _cb_http_complete(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
                        if (pe)
                          {
                             eina_strbuf_append_length(sb, p, pe - p);
-                            printf("FOUND IMG\n");
                             ok = EINA_TRUE;
                          }
                     }
@@ -175,7 +174,6 @@ _cb_http_complete(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
                             if (pe)
                               {
                                  eina_strbuf_append_length(sb, p, pe - p);
-                                 printf("FOUND IMG2\n");
                                  ok = EINA_TRUE;
                               }
                          }
