@@ -581,12 +581,6 @@ video_add(Evas_Object *parent)
    o = sd->o_vid = emotion_object_add(evas_object_evas_get(obj));
    emotion_object_keep_aspect_set(o, EMOTION_ASPECT_KEEP_NONE);
    config = config_get();
-   if (!emotion_object_init(o, config->emotion_engine))
-     {
-        evas_object_del(sd->o_vid);
-        sd->o_vid = NULL;
-        return obj;
-     }
    evas_object_smart_callback_add(o, "frame_decode", _cb_vid_frame, obj);
    evas_object_smart_callback_add(o, "frame_resize", _cb_vid_resize, obj);
    evas_object_smart_callback_add(o, "decode_stop", _cb_vid_stop, obj);

@@ -19,7 +19,7 @@ config_init(void)
      (&eddc, sizeof(eddc), "Config", sizeof(Config));
    edd_base = eet_data_descriptor_stream_new(&eddc);
    EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd_base, Config, "emotion_engine", emotion_engine, EET_T_STRING);
+     (edd_base, Config, "version", version, EET_T_INT);
    snprintf(buf, sizeof(buf), "%s/rage/config/standard/base.cfg", efreet_config_home_get());
    ef = eet_open(buf, EET_FILE_MODE_READ);
    if (ef)
@@ -31,8 +31,7 @@ config_init(void)
      {
         config = calloc(1, sizeof(Config));
         if (!config) abort();
-        // xine vlc gstreamer1
-        config->emotion_engine = eina_stringshare_add("gstreamer1");
+        config->version = 1;
         config_save();
      }
 }
@@ -40,7 +39,6 @@ config_init(void)
 void
 config_shutdown(void)
 {
-   if (config->emotion_engine) eina_stringshare_del(config->emotion_engine);
    free(config);
    if (edd_base)
      {

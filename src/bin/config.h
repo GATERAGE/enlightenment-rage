@@ -5,7 +5,7 @@ typedef struct _Config Config;
 
 struct _Config
 {
-   const char *emotion_engine;
+   int version; // dummy - unused atm
 };
 
 void config_init(void);

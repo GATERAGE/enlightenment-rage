@@ -196,7 +196,6 @@ _local_artwork_poster(Evas_Object *win, const char *path_to_file)
 {
    Evas_Object *em = emotion_object_add(evas_object_evas_get(win));
 
-   emotion_object_init(em, NULL);
    emotion_object_file_set(em, path_to_file);
 
    char *path = albumart_file_get(path_to_file);
@@ -277,13 +276,11 @@ elm_main(int argc, char **argv)
         goto out;
      }
 
-   if (emotion_object_init(vid, NULL))
-     {
-        evas_object_smart_callback_add(vid, "open_done", _cb_loaded, file);
-        emotion_object_file_set(vid, file);
-        vid_timeout = ecore_timer_add(360.0, _cb_timeout, NULL);
-        elm_run();
-     }
+   evas_object_smart_callback_add(vid, "open_done", _cb_loaded, file);
+   emotion_object_file_set(vid, file);
+   vid_timeout = ecore_timer_add(360.0, _cb_timeout, NULL);
+   elm_run();
+
 out:
    elm_shutdown();
 

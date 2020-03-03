@@ -192,9 +192,6 @@ elm_main(int argc, char **argv)
                     "\n"
                     "    -f\n"
                     "      Enable fullscreen mode at start\n"
-                    "    -e ENGINE\n"
-                    "      ENGINE is one of gstreamer1, xine or vlc\n"
-                    "      The default is gstreamer1\n"
                     "\n"
                     "    -sub SUBTITLE_FILE\n"
                     "      This sets the subtitle file to use for the\n"
@@ -208,15 +205,6 @@ elm_main(int argc, char **argv)
                     "      The default is %d. Set to 0 for unlimited.\n"
                     , DEPTH_DEFAULT);
              exit(0);
-          }
-        else if (!strcmp(argv[i], "-e"))
-          {
-             if (i < (argc - 1))
-               {
-                  i++;
-                  eina_stringshare_del(config->emotion_engine);
-                  config->emotion_engine = eina_stringshare_add(argv[i]);
-               }
           }
         else if (!strcmp(argv[i], "-f"))
           {
