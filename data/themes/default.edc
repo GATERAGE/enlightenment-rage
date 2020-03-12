@@ -337,6 +337,7 @@ collections {
          }
          part { name: "art_clip"; type: RECT;
             clip_to: "speaker_clip";
+            scale: 1;
             description { state: "default" 0.0;
                visible: 0;
                color: 255 255 255 0;
@@ -344,6 +345,28 @@ collections {
                rel2.relative: 1.5 1.5;
                fixed: 1 1;
                aspect: 1.0 1.0; aspect_preference: NONE;
+               max: 560 560;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+               visible: 1;
+               color: 255 255 255 255;
+               max: 280 280;
+            }
+         }
+         part { name: "art_clip2"; type: RECT;
+            clip_to: "art_clip";
+            description { state: "default" 0.0;
+               fixed: 1 1;
+            }
+         }
+         part { name: "art_clip3"; type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               fixed: 1 1;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -353,10 +376,18 @@ collections {
                color: 255 255 255 255;
             }
          }
-         part { name: "art_clip2"; type: RECT;
-            clip_to: "art_clip";
+         part { name: "artshadow"; mouse_events: 0;
+            clip_to: "art_clip3";
             description { state: "default" 0.0;
                fixed: 1 1;
+               rel.to: "art_clip";
+               color: 255 255 255 128;
+               image.normal: "win_shadow.png";
+               image.border: 14 14 14 14;
+               image.middle: 0;
+               rel1.offset: -7  -3;
+               rel2.offset: 6 11;
+               fill.smooth: 0;
             }
          }
          part { name: "rage.art"; type: SWALLOW; mouse_events: 0;
@@ -399,20 +430,41 @@ collections {
             }
          }
 
+         program { signal: "state,novideo"; source: "rage";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.2;
+            target: "art_clip";
+            target: "art_clip3";
+         }
+         program { signal: "state,default"; source: "rage";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.2;
+            target: "art_clip";
+            target: "art_clip3";
+         }
+         program { signal: "state,video"; source: "rage";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.2;
+            target: "art_clip";
+            target: "art_clip3";
+         }
          program { signal: "action,newvid"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: ACCELERATE 0.2;
             target: "art_clip";
+            target: "art_clip3";
          }
          program { signal: "state,noart"; source: "rage";
             action: STATE_SET "default" 0.0;
             transition: ACCELERATE 0.3;
             target: "art_clip";
+            target: "art_clip3";
          }
          program { signal: "state,art"; source: "rage";
             action: STATE_SET "visible" 0.0;
             transition: DECELERATE 0.3;
             target: "art_clip";
+            target: "art_clip3";
          }
 
          part { name: "rage.gesture"; type: SWALLOW;

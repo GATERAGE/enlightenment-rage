@@ -741,6 +741,8 @@ win_art(Evas_Object *win, const char *path)
                   evas_object_del(inf->artimg);
                   inf->artimg = NULL;
                }
+             else
+               elm_layout_signal_emit(inf->lay, "state,art", "rage");
           }
         if (!inf->artimg)
           {
