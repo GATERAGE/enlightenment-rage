@@ -27,6 +27,7 @@ struct _Inf
    Eina_Bool dragging : 1;
    Eina_Bool browse_mode : 1;
    Eina_Bool down : 1;
+   Eina_Bool newfile : 1;
 };
 
 // ui high level controls
@@ -49,6 +50,7 @@ Eina_Bool win_video_have_prev(Evas_Object *win);
 Evas_Object *win_add(void);
 void win_focus(Evas_Object *win);
 void win_title_update(Evas_Object *win);
+void win_newfile(Evas_Object *win);
 void win_show(Evas_Object *win, int w, int h);
 void win_art(Evas_Object *win, const char *path);
 void win_aspect_adjust(Evas_Object *win);

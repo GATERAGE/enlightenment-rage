@@ -235,13 +235,13 @@ _local_artwork_get(void *data)
 {
    Evas_Object *win = data;
    Inf *inf = evas_object_data_get(win, "inf");
-   
+
    if (!inf) return EINA_FALSE;
    if (!inf->vid) return EINA_FALSE;
-   
+
    const char *file = NULL;
    const char *filename = video_file_get(inf->vid);
-   
+
    Efreet_Uri *uri = efreet_uri_decode(filename);
    if (uri)
      {
@@ -267,7 +267,7 @@ _local_artwork_get(void *data)
 
              Evas_Object *artwork = video_meta_artwork_get(inf->vid, file, EMOTION_ARTWORK_PREVIEW_IMAGE);
              if (!artwork) artwork = video_meta_artwork_get(inf->vid, file, EMOTION_ARTWORK_IMAGE);
-	     
+
              if (artwork)
                {
                   evas_object_image_save(artwork, path, NULL, NULL);
@@ -281,7 +281,6 @@ _local_artwork_get(void *data)
                }
           }
       }
-  
 
    return EINA_TRUE;
 }
@@ -420,6 +419,7 @@ static void
 _restart_vid(Evas_Object *win, Evas_Object *lay, Evas_Object *vid, const char *file, const char *sub)
 {
    const char *extn = strchr(file, '.');
+   win_newfile(win);
    if ((extn) &&
        ((!strcasecmp(extn, ".mp3")) ||
         (!strcasecmp(extn, ".m4a")) ||
@@ -767,6 +767,13 @@ win_art(Evas_Object *win, const char *path)
 }
 
 void
+win_newfile(Evas_Object *win)
+{
+   Inf *inf = evas_object_data_get(win, "inf");
+   inf->newfile = EINA_TRUE;
+}
+
+void
 win_show(Evas_Object *win, int w, int h)
 {
    Inf *inf = evas_object_data_get(win, "inf");
@@ -789,13 +796,24 @@ win_show(Evas_Object *win, int w, int h)
      }
 
    if (!video_has_video_get(inf->vid))
-     elm_layout_signal_emit(inf->lay, "state,novideo", "rage");
+     {
+        if (inf->newfile)
+          elm_layout_signal_emit(inf->lay, "state,novideo", "rage");
+     }
    else
-     elm_layout_signal_emit(inf->lay, "state,video", "rage");
+     {
+        elm_layout_signal_emit(inf->lay, "state,video", "rage");
+     }
    if (!video_has_audio_get(inf->vid))
-     elm_layout_signal_emit(inf->lay, "state,noaudio", "rage");
+     {
+        if (inf->newfile)
+          elm_layout_signal_emit(inf->lay, "state,noaudio", "rage");
+     }
    else
-     elm_layout_signal_emit(inf->lay, "state,audio", "rage");
+     {
+        elm_layout_signal_emit(inf->lay, "state,audio", "rage");
+     }
+   inf->newfile = EINA_FALSE;
 }
 
 void

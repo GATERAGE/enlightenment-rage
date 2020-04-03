@@ -666,7 +666,6 @@ video_file_set(Evas_Object *obj, const char *file)
         eina_stringshare_replace(&(sd->artfile), NULL);
         emotion_object_file_set(sd->o_vid, sd->file);
         video_position_set(obj, 0.0);
-        printf("set %p %s %i\n", obj, file, sd->doart);
         if (sd->doart)
           {
              const char *extn = strchr(sd->file, '.');
