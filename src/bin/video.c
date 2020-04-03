@@ -52,9 +52,23 @@ _cb_thumb_exe(void *data, int type EINA_UNUSED, void *event)
         sd->exe = NULL;
         if (ev->exit_code == 0)
           {
+             Evas_Coord ox, oy, ow, oh;
+
              path = albumart_file_get(sd->realfile);
-             eina_stringshare_replace(&(sd->artfile), path);
-             mpris_metadata_change();
+             if (path)
+               {
+                  if (ecore_file_exists(path))
+                    {
+                       eina_stringshare_replace(&(sd->artfile), path);
+                       evas_object_image_file_set(sd->o_img, path, NULL);
+                       evas_object_image_size_get(sd->o_img, &(sd->tw), &(sd->th));
+                       evas_object_geometry_get(data, &ox, &oy, &ow, &oh);
+                       evas_object_show(sd->o_img);
+                       _ob_resize(data, ox, oy, ow, oh);
+                       mpris_metadata_change();
+                    }
+                  free(path);
+               }
           }
      }
    return EINA_TRUE;
@@ -90,9 +104,12 @@ _art_check(Evas_Object *obj)
                   evas_object_image_size_get(sd->o_img, &(sd->tw), &(sd->th));
                   evas_object_geometry_get(obj, &ox, &oy, &ow, &oh);
                   _ob_resize(obj, ox, oy, ow, oh);
+                  if (sd->tw > 0)
+                    {
+                       eina_stringshare_replace(&(sd->artfile), thumb);
+                       mpris_metadata_change();
+                    }
                }
-             eina_stringshare_replace(&(sd->artfile), thumb);
-             mpris_metadata_change();
              free(thumb);
           }
      }
@@ -100,6 +117,7 @@ _art_check(Evas_Object *obj)
      {
         evas_object_hide(sd->o_img);
      }
+
    if (!sd->artfile)
      {
         char buf[PATH_MAX];
@@ -648,6 +666,7 @@ video_file_set(Evas_Object *obj, const char *file)
         eina_stringshare_replace(&(sd->artfile), NULL);
         emotion_object_file_set(sd->o_vid, sd->file);
         video_position_set(obj, 0.0);
+        printf("set %p %s %i\n", obj, file, sd->doart);
         if (sd->doart)
           {
              const char *extn = strchr(sd->file, '.');
