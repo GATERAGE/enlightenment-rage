@@ -147,6 +147,7 @@ collections {
                image.normal: "shadow_circle_horiz.png";
                min: 0 32;
                color: 255 255 255 128;
+               fixed: 1 1;
             }
          }
          part { name: "sh_b"; nomouse;
@@ -158,6 +159,7 @@ collections {
                image.normal: "shadow_circle_horiz.png";
                min: 0 32;
                color: 255 255 255 128;
+               fixed: 1 1;
             }
          }
          part { name: "sh_l"; nomouse;
@@ -169,6 +171,7 @@ collections {
                image.normal: "shadow_circle_vert.png";
                min: 32 0;
                color: 255 255 255 128;
+               fixed: 1 1;
             }
          }
          part { name: "sh_r"; nomouse;
@@ -180,6 +183,7 @@ collections {
                image.normal: "shadow_circle_vert.png";
                min: 32 0;
                color: 255 255 255 128;
+               fixed: 1 1;
             }
          }
 
@@ -301,7 +305,7 @@ collections {
             }
             description { state: "pref" 0.0;
                inherit: "default" 0.0;
-               min: 290 290;
+               min: 290 238;
             }
          }
          program { signal: "pref,size,on"; source: "rage";
@@ -343,9 +347,9 @@ collections {
                color: 255 255 255 0;
                rel1.relative: -0.5 -0.5;
                rel2.relative: 1.5 1.5;
-               fixed: 1 1;
                aspect: 1.0 1.0; aspect_preference: NONE;
-               max: 560 560;
+               max: 580 580;
+               fixed: 1 1;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -353,7 +357,7 @@ collections {
                rel2.relative: 1.0 1.0;
                visible: 1;
                color: 255 255 255 255;
-               max: 280 280;
+               max: 290 290;
             }
          }
          part { name: "art_clip2"; type: RECT;
@@ -379,7 +383,6 @@ collections {
          part { name: "artshadow"; mouse_events: 0;
             clip_to: "art_clip3";
             description { state: "default" 0.0;
-               fixed: 1 1;
                rel.to: "art_clip";
                color: 255 255 255 128;
                image.normal: "win_shadow.png";
@@ -388,6 +391,7 @@ collections {
                rel1.offset: -7  -3;
                rel2.offset: 6 11;
                fill.smooth: 0;
+               fixed: 1 1;
             }
          }
          part { name: "rage.art"; type: SWALLOW; mouse_events: 0;
