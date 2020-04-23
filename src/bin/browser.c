@@ -329,11 +329,11 @@ _entry_files_pop_clear(Entry *entry)
           {
              if (entry->file_obj[i])
                {
-                  entry->sels = eina_list_remove(entry->sels, entry->file_obj[i]);
-                  evas_object_del(entry->file_obj[i]);
+                  Evas_Object *o = entry->file_obj[i];
                   entry->file_obj[i] = NULL;
+                  entry->sels = eina_list_remove(entry->sels, o);
                   destroyed++;
-                  if (destroyed >= DESTROYED_MAX) break;
+                  evas_object_del(o);
                }
           }
         _pop_eval_delay(win, 0, destroyed);
@@ -616,7 +616,7 @@ _cb_entry_table_resize(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object 
    Entry *entry = data;
    Evas_Object *win = evas_object_data_get(obj, "win");
    if (initial_update_timer) return;
-   _entry_files_redo(win, entry);
+//   _entry_files_redo(win, entry);
 }
 
 static void
@@ -627,10 +627,11 @@ _cb_scroller_resize(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSE
    Entry *entry;
    if ((!inf) || (!bx)) return;
    if (initial_update_timer) return;
-   EINA_LIST_FOREACH(entries, l, entry)
-     {
-        _entry_files_redo(data, entry);
-     }
+//   printf("_cb_scroller_resize .... \n");
+//   EINA_LIST_FOREACH(entries, l, entry)
+//     {
+//        _entry_files_redo(data, entry);
+//     }
 }
 
 static Eina_Bool
@@ -642,6 +643,7 @@ _cb_initial_update_timer(void *data)
 
    initial_update_timer = NULL;
    if ((!inf) || (!bx)) return EINA_FALSE;
+   printf("_cb_initial_update_timer .... \n");
    EINA_LIST_FOREACH(entries, l, entry)
      {
         _entry_files_redo(data, entry);
@@ -1251,6 +1253,7 @@ browser_size_update(Evas_Object *win)
    if (!inf) return;
    if (!bx) return;
    if (initial_update_timer) return;
+   printf("browser_size_update...\n");
    EINA_LIST_FOREACH(entries, l, entry)
      {
         _entry_files_redo(win, entry);
