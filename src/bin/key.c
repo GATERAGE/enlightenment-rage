@@ -191,6 +191,18 @@ key_handle(Evas_Object *win, Evas_Event_Key_Down *ev)
         if (browser_visible()) return;
         video_ratio_size_get(inf->vid, &w, &h);
         if ((w > 1) && (h > 1)) evas_object_resize(win, w, h);
+        else
+          {
+             Evas_Coord mw = 1, mh = 1;
+
+             elm_layout_signal_emit(inf->lay, "pref,size,on", "rage");
+             edje_object_message_signal_process(elm_layout_edje_get(inf->lay));
+             edje_object_size_min_calc(elm_layout_edje_get(inf->lay), &mw, &mh);
+             elm_layout_signal_emit(inf->lay, "pref,size,off", "rage");
+             w = mw;
+             h = mh;
+             if ((w > 1) && (h > 1)) evas_object_resize(win, w, h);
+          }
      }
    else if (!strcmp(ev->keyname, "backslash"))
      {
