@@ -643,7 +643,6 @@ _cb_initial_update_timer(void *data)
 
    initial_update_timer = NULL;
    if ((!inf) || (!bx)) return EINA_FALSE;
-   printf("_cb_initial_update_timer .... \n");
    EINA_LIST_FOREACH(entries, l, entry)
      {
         _entry_files_redo(data, entry);
@@ -1253,7 +1252,6 @@ browser_size_update(Evas_Object *win)
    if (!inf) return;
    if (!bx) return;
    if (initial_update_timer) return;
-   printf("browser_size_update...\n");
    EINA_LIST_FOREACH(entries, l, entry)
      {
         _entry_files_redo(win, entry);
