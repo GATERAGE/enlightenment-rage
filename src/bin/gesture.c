@@ -1,4 +1,5 @@
 #include <Elementary.h>
+#include <math.h>
 #include "main.h"
 #include "win.h"
 #include "winvid.h"

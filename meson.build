@@ -11,8 +11,10 @@ proj     = meson.project_name()
 ver      = meson.project_version()
 
 ##### dependencies
+cc = meson.get_compiler('c')
+m_dep = cc.find_library('m', required : false)
 efl_version = '>= 1.22.3'
-deps = dependency('elementary', version: efl_version)
+deps = [ dependency('elementary', version: efl_version), m_dep ]
 edje = dependency('edje',       version: efl_version)
 
 ##### edje_cc binary compiler tool
