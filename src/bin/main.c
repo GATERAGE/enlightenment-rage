@@ -125,7 +125,9 @@ _cb_feedback_recursion(void *data, Ecore_Thread *thread EINA_UNUSED, void *msg)
    EINA_LIST_FREE(list, path)
      {
         mime = efreet_mime_type_get(path);
-        if (!strncmp(mime, "audio/", 6) || !strncmp(mime, "video/", 6))
+        if ((!mime) ||
+            (!strncmp(mime, "audio/", 6)) ||
+            (!strncmp(mime, "video/", 6)))
          {
             update_content = EINA_TRUE;
             win_list_hide(recursion->win);
