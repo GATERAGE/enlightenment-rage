@@ -584,7 +584,8 @@ video_add(Evas_Object *parent)
    Evas *e;
    Evas_Object *obj, *o;
    Video *sd;
-   Config *config;
+// XXX: to do later
+//   Config *config;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
    e = evas_object_evas_get(parent);
@@ -598,7 +599,8 @@ video_add(Evas_Object *parent)
    emotion_init();
    o = sd->o_vid = emotion_object_add(evas_object_evas_get(obj));
    emotion_object_keep_aspect_set(o, EMOTION_ASPECT_KEEP_NONE);
-   config = config_get();
+// XXX: to do later
+//   config = config_get();
    evas_object_smart_callback_add(o, "frame_decode", _cb_vid_frame, obj);
    evas_object_smart_callback_add(o, "frame_resize", _cb_vid_resize, obj);
    evas_object_smart_callback_add(o, "decode_stop", _cb_vid_stop, obj);

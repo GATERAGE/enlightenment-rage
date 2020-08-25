@@ -611,22 +611,22 @@ _cb_entry_table_move(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *in
 }
 
 static void
-_cb_entry_table_resize(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj, void *info EINA_UNUSED)
+_cb_entry_table_resize(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *info EINA_UNUSED)
 {
-   Entry *entry = data;
-   Evas_Object *win = evas_object_data_get(obj, "win");
-   if (initial_update_timer) return;
+//   Entry *entry = data;
+//   Evas_Object *win = evas_object_data_get(obj, "win");
+//   if (initial_update_timer) return;
 //   _entry_files_redo(win, entry);
 }
 
 static void
-_cb_scroller_resize(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *info EINA_UNUSED)
+_cb_scroller_resize(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *info EINA_UNUSED)
 {
-   Inf *inf = evas_object_data_get(data, "inf");
-   Eina_List *l;
-   Entry *entry;
-   if ((!inf) || (!bx)) return;
-   if (initial_update_timer) return;
+//   Inf *inf = evas_object_data_get(data, "inf");
+//   Eina_List *l;
+//   Entry *entry;
+//   if ((!inf) || (!bx)) return;
+//   if (initial_update_timer) return;
 //   printf("_cb_scroller_resize .... \n");
 //   EINA_LIST_FOREACH(entries, l, entry)
 //     {

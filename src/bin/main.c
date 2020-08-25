@@ -169,7 +169,8 @@ elm_main(int argc, char **argv)
    Evas_Object *win;
    char buf[4096];
    int i;
-   Config *config;
+// XXX: to do later
+//   Config *config;
    Inf *inf;
    Eina_Bool fullscreen = EINA_FALSE;
    int rotation = 0;
@@ -180,7 +181,8 @@ elm_main(int argc, char **argv)
 
    elm_need_efreet();
    config_init();
-   config = config_get();
+// XXX: to do later
+//   config = config_get();
    for (i = 1; i < argc; i++)
      {
         if ((!strcmp(argv[i], "-h")) ||
