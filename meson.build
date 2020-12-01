@@ -3,7 +3,7 @@ project('rage', 'c',
         version        : '0.3.1',
         license        : 'BSD 2 clause',
         default_options: [ 'buildtype=plain', 'c_std=gnu99' ],
-        meson_version  : '>= 0.40.0')
+        meson_version  : '>= 0.47.0')
 base_url = 'https://www.enlightenment.org/about-'
 
 ##### convenience variables for later
