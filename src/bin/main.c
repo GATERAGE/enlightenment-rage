@@ -104,10 +104,16 @@ _cb_start_recursion(void *data, Ecore_Thread *thread EINA_UNUSED)
 static void
 _cb_end_recursion(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   Recursion_Data *recursion = data;
+   Recursion_Data *recursion;
+   Eina_Bool have_media;
+
+   recursion = data;
+   have_media = recursion->have_media_files;
 
    free(recursion->realpath);
    free(recursion);
+   if (!have_media)
+     elm_exit();
 }
 
 static void
