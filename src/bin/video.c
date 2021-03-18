@@ -441,6 +441,7 @@ _smart_del(Evas_Object *obj)
         sd->exe_handler = NULL;
      }
    _parent_sc.del(obj);
+   free(sd);
 
    emotion_shutdown();
 }

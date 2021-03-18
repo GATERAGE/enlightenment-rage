@@ -517,6 +517,7 @@ _smart_del(Evas_Object *obj)
    sd->cycle_timer = NULL;
 
    _parent_sc.del(obj);
+   free(sd);
 }
 
 static void
