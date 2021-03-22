@@ -6,6 +6,7 @@
 #include "browser.h"
 #include "config.h"
 #include "mpris.h"
+#include "util.h"
 
 #define DEPTH_DEFAULT 99
 
@@ -121,7 +122,6 @@ _cb_feedback_recursion(void *data, Ecore_Thread *thread EINA_UNUSED, void *msg)
 {
    Recursion_Data *recursion;
    Eina_List *list;
-   const char *mime;
    const char *path;
    Eina_Bool update_content = EINA_FALSE;
 
@@ -130,10 +130,7 @@ _cb_feedback_recursion(void *data, Ecore_Thread *thread EINA_UNUSED, void *msg)
 
    EINA_LIST_FREE(list, path)
      {
-        mime = efreet_mime_type_get(path);
-        if ((!mime) ||
-            (!strncmp(mime, "audio/", 6)) ||
-            (!strncmp(mime, "video/", 6)))
+        if (util_video_ok(path) || util_audio_ok(path))
          {
             update_content = EINA_TRUE;
             win_list_hide(recursion->win);

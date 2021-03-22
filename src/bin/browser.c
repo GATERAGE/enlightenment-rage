@@ -6,6 +6,7 @@
 #include "videothumb.h"
 #include "key.h"
 #include "dnd.h"
+#include "util.h"
 
 typedef struct _Message Message;
 typedef struct _Entry Entry;
@@ -120,72 +121,6 @@ _item_size_get(Evas_Object *win, Evas_Coord *w, Evas_Coord *h)
    if (*h < sz) *h = sz;
 }
 
-static Eina_Bool
-_video_ok(const char *path)
-{
-   const char *exts[] =
-     {
-        ".asf", ".avi", ".bdm", ".bdmv", ".clpi", ".cpi", ".dv", ".fla",
-        ".flv", ".m1v", ".m2t", ".m2v", ".m4v", ".mkv", ".mov", ".mp2",
-        ".mp2ts", ".mp4", ".mpe", ".mpeg", ".mpg", ".mpl", ".mpls", ".mts",
-        ".mxf", ".nut", ".nuv", ".ogg", ".ogm", ".ogv", ".qt", ".rm", ".rmj",
-        ".rmm", ".rms", ".rmvb", ".rmx", ".rv", ".swf", ".ts", ".weba",
-        ".webm", ".wmv", ".3g2", ".3gp", ".3gp2", ".3gpp", ".3gpp2", ".3p2",
-        ".264",
-        NULL
-     };
-   int i;
-   const char *ext = strrchr(path, '.');
-   if (!ext) return EINA_FALSE;
-   for (i = 0; exts[i]; i++)
-     {
-        if (!strcasecmp(ext, exts[i])) return EINA_TRUE;
-     }
-   return EINA_FALSE;
-}
-
-static Eina_Bool
-_audio_ok(const char *path)
-{
-   const char *exts[] =
-     {
-        ".mp3", ".m4a", ".oga", ".aac", ".flac", ".wav",
-        NULL
-     };
-   int i;
-   const char *ext = strrchr(path, '.');
-   if (!ext) return EINA_FALSE;
-   for (i = 0; exts[i]; i++)
-     {
-        if (!strcasecmp(ext, exts[i])) return EINA_TRUE;
-     }
-   return EINA_FALSE;
-}
-
-static char *
-_videos_dir_get(void)
-{
-   char buf[PATH_MAX];
-   const char *vids, *home;
-   char *vidsreal = NULL, *homereal = NULL;
-
-   vids = efreet_videos_dir_get();
-   if (vids) vidsreal = ecore_file_realpath(vids);
-   home = eina_environment_home_get();
-   if (home) homereal = ecore_file_realpath(home);
-   if ((vidsreal) && (homereal))
-     {
-        if (!strcmp(vidsreal, homereal)) vids = NULL;
-     }
-   free(vidsreal);
-   free(homereal);
-   if (vids)
-     snprintf(buf, sizeof(buf), "%s", vids);
-   else
-     snprintf(buf, sizeof(buf), "%s/Videos", eina_environment_home_get());
-   return strdup(buf);
-}
-
 static void
 _fill_message(Ecore_Thread *th, Type type, Entry *entry)
 {
@@ -241,7 +176,7 @@ _fill_scan(Ecore_Thread *th, Entry *parent, const char *dir)
                     }
                   else
                     {
-                       if (_video_ok(file) || _audio_ok(file))
+                       if (util_video_ok(file) || util_audio_ok(file))
                          {
                             eina_lock_take(&(entry->lock));
                             entry->files = eina_list_append
@@ -817,7 +752,7 @@ _fill(Evas_Object *win)
    dir_entry = NULL;
    fdat = malloc(sizeof(Fill_Data));
    if (!fdat) return;
-   fdat->videos = _videos_dir_get();
+   fdat->videos = util_videos_dir_get();
    fdat->win = win;
    eina_semaphore_new(&step_sema, 0);
    fill_thread = ecore_thread_feedback_run(_fill_thread, _fill_feedback,

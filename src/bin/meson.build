@@ -14,7 +14,8 @@ executable('rage', [
     'videothumb.c', 'videothumb.h',
     'albumart.c',   'albumart.h',
     'browser.c',    'browser.h',
-    'mpris.c',      'mpris.h'
+    'mpris.c',      'mpris.h',
+    'util.c',       'util.h'
   ],
   include_directories: inc,
   dependencies       : deps,
