@@ -1,4 +1,8 @@
+
 #include <Elementary.h>
+
+/* no mpris support on Windows */
+#ifndef _WIN32
 #include "main.h"
 #include "win.h"
 #include "browser.h"
@@ -1140,3 +1144,47 @@ mpris_shutdown(void)
 //   eldbus_connection_unref(conn);
    conn = NULL;
 }
+
+#else
+
+void
+mpris_fullscreen_change(void)
+{
+}
+
+void
+mpris_volume_change(void)
+{
+}
+
+void
+mpris_loop_status_change(void)
+{
+}
+
+void
+mpris_playback_status_change(void)
+{
+}
+
+void
+mpris_position_change(double pos EINA_UNUSED)
+{
+}
+
+void
+mpris_metadata_change(void)
+{
+}
+
+void
+mpris_init(Evas_Object *win EINA_UNUSED)
+{
+}
+
+void
+mpris_shutdown(void)
+{
+}
+
+#endif
