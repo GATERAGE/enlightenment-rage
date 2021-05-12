@@ -1,3 +1,5 @@
+efl_version: 1 25;
+
 collections {
 
 #define CTRLSIZE 26

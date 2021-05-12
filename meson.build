@@ -13,7 +13,7 @@ ver      = meson.project_version()
 ##### dependencies
 cc = meson.get_compiler('c')
 m_dep = cc.find_library('m', required : false)
-efl_version = '>= 1.22.3'
+efl_version = '>= 1.25.0'
 deps = [ dependency('elementary', version: efl_version), m_dep ]
 edje = dependency('edje',       version: efl_version)
 
