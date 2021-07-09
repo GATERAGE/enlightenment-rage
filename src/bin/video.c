@@ -409,9 +409,9 @@ _smart_add(Evas_Object *obj)
    _parent_sc.add(obj);
 
    o = evas_object_rectangle_add(evas_object_evas_get(obj));
+   evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_smart_member_add(o, obj);
    sd->clip = o;
-   evas_object_color_set(o, 255, 255, 255, 255);
 }
 
 static void
@@ -450,12 +450,11 @@ static void
 _smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
    Video *sd = evas_object_smart_data_get(obj);
-   Evas_Coord ox, oy, ow, oh;
+   Evas_Coord ow, oh;
    if (!sd) return;
-   evas_object_geometry_get(obj, &ox, &oy, &ow, &oh);
+   evas_object_geometry_get(obj, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
    evas_object_smart_changed(obj);
-   evas_object_resize(sd->clip, ow, oh);
 }
 
 static Eina_Bool
@@ -524,14 +523,6 @@ _smart_calculate(Evas_Object *obj)
 }
 
 static void
-_smart_move(Evas_Object *obj, Evas_Coord x EINA_UNUSED, Evas_Coord y EINA_UNUSED)
-{
-   Video *sd = evas_object_smart_data_get(obj);
-   if (!sd) return;
-   evas_object_smart_changed(obj);
-}
-
-static void
 _mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event)
 {
    Evas_Event_Mouse_Down *ev = event;
@@ -574,7 +565,6 @@ _smart_init(void)
    sc.add       = _smart_add;
    sc.del       = _smart_del;
    sc.resize    = _smart_resize;
-   sc.move      = _smart_move;
    sc.calculate = _smart_calculate;
    _smart = evas_smart_class_new(&sc);
 }
