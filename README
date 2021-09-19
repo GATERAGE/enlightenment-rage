@@ -17,12 +17,6 @@ thumbnail and more. It accepts file lists on the cmdline ala:
   rage dvd:/
   rage http://www.blah.com/stream
 
-You can tell it what media/video engine in emotion to ue via -e:
-
-  rage -e vlc blah.mov
-  rage -e xine dvd:/
-  rage -e gstreamer1 blah.mp3
-
 You can also specify subtitle files with -sub:
 
   rage file.mp4 -sub mysubs.srt
