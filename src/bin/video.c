@@ -696,6 +696,10 @@ video_sub_file_set(Evas_Object *obj, const char *file)
 {
    Video *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
+   if ((!file) || (file && (!file[0])))
+     emotion_object_spu_mute_set(sd->o_vid, EINA_TRUE);
+   else
+     emotion_object_spu_mute_set(sd->o_vid, EINA_FALSE);
    emotion_object_video_subtitle_file_set(sd->o_vid, file);
 }
 
