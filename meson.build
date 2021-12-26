@@ -1,6 +1,6 @@
 ##### project
 project('rage', 'c',
-        version        : '0.3.1',
+        version        : '0.4.0',
         license        : 'BSD 2 clause',
         default_options: [ 'buildtype=plain', 'c_std=gnu99' ],
         meson_version  : '>= 0.47.0')
@@ -13,7 +13,7 @@ ver      = meson.project_version()
 ##### dependencies
 cc = meson.get_compiler('c')
 m_dep = cc.find_library('m', required : false)
-efl_version = '>= 1.25.0'
+efl_version = '>= 1.26.0'
 deps = [ dependency('elementary', version: efl_version), m_dep ]
 edje = dependency('edje',       version: efl_version)
 
