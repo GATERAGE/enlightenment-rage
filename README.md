@@ -1,6 +1,5 @@
 ![Rage](/data/icons/rage.png)
 # Rage
-## 0.4.0
 
 -----
 
