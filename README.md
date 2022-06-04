@@ -132,7 +132,76 @@ It's fully key controlled too. Key controls are:
 | F6              | DVD nav menu 6
 | F7              | DVD nav menu 7
 
+-----
+
 ## Requirements
 
 * efl
 
+-----
+
+## Compiling and Installing
+
+Meson is the build system used for this project. For more information
+please see [medonbuild.com](https://mesonbuild.com)
+
+Normal compilation in /usr/local:
+```
+meson . build
+ninja -C build
+sudo ninja -C build install
+```
+
+For meson build generic options:
+```
+meson --help
+```
+
+For a list of project specific options supported:
+```
+cat meson_options.txt
+```
+
+To set 1 or more project specific options:
+```
+meson --prefix=/path/to -Doption=value [-Dother=value2] [...] . build
+```
+
+To display current configuration:
+
+```
+meson configure build
+```
+
+The above will only work after at least the following is done:
+```
+meson . build
+```
+
+### Quick build help
+
+How clean out the build and config and start fresh:
+```
+rm -rf build
+```
+
+How to make a dist tarball and check its build:
+(must do it from git tree clone and commit all changes to git first)
+```
+ninja -C build dist
+```
+
+How to change prefix:
+```
+meson --prefix=/path/to/prefix . build
+```
+
+How to install in a specific destination directory for packaging:
+```
+DESTDIR=/path/to/destdir ninja -C build install
+```
+
+How to build with verbose output (full commands run):
+```
+ninja -C build -v
+```
