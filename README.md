@@ -136,7 +136,7 @@ It's fully key controlled too. Key controls are:
 
 ## Requirements
 
-* (efl)[https://git.enlightenment.org/enlightenment/efl]
+* [efl](https://git.enlightenment.org/enlightenment/efl)
 
 -----
 
