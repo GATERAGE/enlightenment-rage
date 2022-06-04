@@ -146,12 +146,12 @@ Meson is the build system used for this project. For more information
 please see [mesonbuild.com](https://mesonbuild.com)
 
 You will need normal build tooling installed such as a compiler (gcc
-or clang for example), pkg-config, ninja, any relevant pakcage-dev or
+or clang for example), pkg-config, ninja, any relevant package-dev or
 package-devel packages if your distribution splits out development
-headers etc.
+headers (e.g. libc6-dev) etc.
 
-Depending on where dependencies (like efl), you might have to set your
-`PKG_CONFIG_PATH` environment variable like:
+Depending on where dependencies (like efl) are installed, you might have to
+set your `PKG_CONFIG_PATH` environment variable like:
 ```
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
 ```
@@ -162,13 +162,14 @@ to your library locations so you might have to have more like:
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig
 ```
 
-You will need to enusre that the destination library direcytory (e.g.
+You will need to enusre that the destination library directory (e.g.
 `/usr/local/lib` is in your /etc/ld.so.conf or /etc/ld.so.conf.d/
 files and after insgtaling anything that installes libraries you
-re-run `ldconfig`.
+re-run `ldconfig`. Please see relevant documentation on ldconfig and
+ld.so.conf for your distribution.
 
 You might also want to add the destination bin dir to your environment
-variable PATH like:
+variable PATH (see documentation on your shell PATH variable) such as:
 ```
 export PATH=/usr/local/bin:/usr/bin:/bin
 ```
