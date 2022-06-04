@@ -37,10 +37,10 @@ Which goes into "Browser mode" where Rage will index/list your
 ~/Videos directory as a library (and subdirectories).
 
 This depends on video engine support to display them, so it may not
-work. Also rage will use a srt or sub format file if found,
-automatically. If the filename is video.mp4 or video.avi, video.mov
-etc. then rage looks for video.srt or video.sub and automatically will
-use it.
+work. You might have toinstall more codec plugins for Gstreamer. Also
+Rage will use a srt or sub format file if found, automatically. If the
+filename is video.mp4 or video.avi, video.mov etc. then Rage looks for
+video.srt or video.sub and automatically will use it.
 
 If you DND files onto its window, they are added to the playlist.
 Mouse over the right of the window brings up the playlist. Mouse over
@@ -48,7 +48,7 @@ the position bar at the bottom, if it's a video, brings up a video
 thumbnail of that position (it may take a while to generate thumbnails
 for that video - they are cached).
 
-If you run rage without arguments at all it goes into "browser" mode
+If you run Rage without arguments at all it goes into "browser" mode
 where it will index all your media files in "$HOME/Videos" or whatever
 you have configured your XDG video directory to be. It will flatten
 out all directories that it recursively scans in this videos director
@@ -62,8 +62,11 @@ fetching or generating thumbnails for the first time, be a little
 patient. They will be cached so they only need to be generated or
 fetched once (or if the file changes).
 
-It's fully key controlled too. Key controls are:
+-----
 
+## Key controls
+
+It's fully key controlled too. Key controls are:
 
 | KEY             | Action
 | ----------------|----------------------------------------------------------
@@ -82,6 +85,9 @@ It's fully key controlled too. Key controls are:
 | XF86AudioPlay   | pause toggle
 | s               | Stop
 | XF86AudioStop   | Stop
+| BackSpace       | Stop
+| Delete          | Stop
+| c               | Stop but don't exit playback
 | PgUp            | Previous file
 | XF86AudioPrev   | Previous file
 | PgDn            | Next file
@@ -123,7 +129,7 @@ It's fully key controlled too. Key controls are:
 | F2              | DVD nav menu 2
 | F3              | DVD nav menu 3
 | F4              | DVD nav menu 4
-| F5               | DVD nav menu 5
+| F5              | DVD nav menu 5
 | F6              | DVD nav menu 6
 | F7              | DVD nav menu 7
 
