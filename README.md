@@ -143,7 +143,7 @@ It's fully key controlled too. Key controls are:
 ## Compiling and Installing
 
 Meson is the build system used for this project. For more information
-please see [medonbuild.com](https://mesonbuild.com)
+please see [mesonbuild.com](https://mesonbuild.com)
 
 You will need normal build tooling installed such as a compiler (gcc
 or clang for example), pkg-config, ninja, any relevant pakcage-dev or
