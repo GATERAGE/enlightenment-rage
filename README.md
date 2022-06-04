@@ -59,7 +59,7 @@ fetched once (or if the file changes).
 
 -----
 
-Thigs that need doing:
+Things that need doing:
 
 [TODO](TODO.md)
 
