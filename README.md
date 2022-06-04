@@ -3,9 +3,8 @@
 
 -----
 
-*FOR ANY ISSUES PLEASE EMAIL:*
-
-`enlightenment-devel@lists.sourceforge.net`
+*Please report bugs/issues at*
+[git.enlightenment.org](https://git.enlightenment.org/enlightenment/rage/issues)
 
 -----
 
