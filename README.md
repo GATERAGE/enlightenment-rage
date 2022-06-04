@@ -136,7 +136,7 @@ It's fully key controlled too. Key controls are:
 
 ## Requirements
 
-* efl
+* (efl)[https://git.enlightenment.org/enlightenment/efl]
 
 -----
 
@@ -144,6 +144,34 @@ It's fully key controlled too. Key controls are:
 
 Meson is the build system used for this project. For more information
 please see [medonbuild.com](https://mesonbuild.com)
+
+You will need normal build tooling installed such as a compiler (gcc
+or clang for example), pkg-config, ninja, any relevant pakcage-dev or
+package-devel packages if your distribution splits out development
+headers etc.
+
+Depending on where dependencies (like efl), you might have to set your
+`PKG_CONFIG_PATH` environment variable like:
+```
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+```
+
+Also note that some distributions like to add extra arch directories
+to your library locations so you might have to have more like:
+```
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig
+```
+
+You will need to enusre that the destination library direcytory (e.g.
+`/usr/local/lib` is in your /etc/ld.so.conf or /etc/ld.so.conf.d/
+files and after insgtaling anything that installes libraries you
+re-run `ldconfig`.
+
+You might also want to add the destination bin dir to your environment
+variable PATH like:
+```
+export PATH=/usr/local/bin:/usr/bin:/bin
+```
 
 Normal compilation in /usr/local:
 ```
@@ -168,7 +196,6 @@ meson --prefix=/path/to -Doption=value [-Dother=value2] [...] . build
 ```
 
 To display current configuration:
-
 ```
 meson configure build
 ```
