@@ -3,7 +3,7 @@ project('rage', 'c',
         version        : '0.4.0',
         license        : 'BSD 2 clause',
         default_options: [ 'buildtype=plain', 'c_std=gnu99' ],
-        meson_version  : '>= 0.47.0')
+        meson_version  : '>= 0.60.0')
 base_url = 'https://www.enlightenment.org/about-'
 
 ##### convenience variables for later
@@ -20,7 +20,7 @@ edje = dependency('edje',       version: efl_version)
 ##### edje_cc binary compiler tool
 edje_cmd = get_option('edje-cc')
 if edje_cmd == ''
-  edje_cmd = join_paths(edje.get_pkgconfig_variable('prefix'),
+  edje_cmd = join_paths(edje.get_variable(pkgconfig: 'prefix'),
                         'bin', 'edje_cc')
 endif
 
@@ -51,5 +51,5 @@ cfg.set       ('_POSIX_1_SOURCE'         , 1)
 configure_file(output: 'rage_config.h', configuration: cfg)
 
 ##### subdirs
-subdir('src')
+subdir('src/bin')
 subdir('data')

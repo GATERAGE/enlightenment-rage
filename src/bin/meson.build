@@ -19,7 +19,7 @@ executable('rage', [
   ],
   include_directories: inc,
   dependencies       : deps,
-  gui_app            : true,
+  win_subsystem      : 'windows',
   install            : true)
 executable('rage_thumb', [
     'thumb.c',
