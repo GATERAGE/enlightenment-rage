@@ -44,27 +44,40 @@ util_audio_ok(const char *path)
    return EINA_FALSE;
 }
 
+static char *_vid_dir = NULL;
+
+void
+util_videos_dir_set(const char *dir)
+{
+  if (_vid_dir) free(_vid_dir);
+  _vid_dir = NULL;
+  if (dir) _vid_dir = strdup(dir);
+}
+
 char *
 util_videos_dir_get(void)
 {
-   char buf[PATH_MAX];
-   const char *vids, *home;
-   char *vidsreal = NULL, *homereal = NULL;
+  char buf[PATH_MAX];
+  const char *vids, *home;
+  char *vidsreal = NULL, *homereal = NULL;
 
-   vids = efreet_videos_dir_get();
-   if (vids) vidsreal = ecore_file_realpath(vids);
-   home = eina_environment_home_get();
-   if (home) homereal = ecore_file_realpath(home);
-   if ((vidsreal) && (homereal))
-     {
-        if (!strcmp(vidsreal, homereal)) vids = NULL;
-     }
-   free(vidsreal);
-   free(homereal);
-   if (vids)
-     snprintf(buf, sizeof(buf), "%s", vids);
-   else
-     snprintf(buf, sizeof(buf), "%s/Videos", eina_environment_home_get());
-   return strdup(buf);
+  if (_vid_dir)
+    { // if explicitly set - use this
+      vidsreal = ecore_file_realpath(_vid_dir);
+      if (vidsreal) return vidsreal;
+    }
+  vids = efreet_videos_dir_get();
+  if (vids)
+    { // if efreet has a video dir - use that
+      vidsreal = ecore_file_realpath(vids);
+      if (vidsreal) return vidsreal;
+    }
+  // fallback - homedir + Videos
+  home = eina_environment_home_get();
+  if (home) homereal = ecore_file_realpath(home);
+  if (!homereal) return strdup("/tmp");
+  snprintf(buf, sizeof(buf), "%s/Videos", homereal);
+  free(homereal);
+  return strdup(buf);
 }
 

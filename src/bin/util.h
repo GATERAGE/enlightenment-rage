@@ -3,6 +3,7 @@
 
 Eina_Bool  util_video_ok(const char *path);
 Eina_Bool  util_audio_ok(const char *path);
+void       util_videos_dir_set(const char *dir);
 char      *util_videos_dir_get(void);
 
 #endif

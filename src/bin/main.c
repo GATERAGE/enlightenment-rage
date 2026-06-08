@@ -210,6 +210,9 @@ elm_main(int argc, char **argv)
                     "    -d DEPTH\n"
                     "      Set maximum level of recursion.\n"
                     "      The default is %d. Set to 0 for unlimited.\n"
+                    "    -dir directory/to/scan\n"
+                    "      Use this directory to scan for videos instead\n"
+                    "      of ~/Videos\n"
                     , DEPTH_DEFAULT);
              exit(0);
           }
@@ -241,6 +244,14 @@ elm_main(int argc, char **argv)
                {
                   i++;
                   if (vid) eina_stringshare_replace(&(vid->sub), argv[i]);
+               }
+          }
+        else if (!strcmp(argv[i], "-dir"))
+          {
+             if (i < (argc - 1))
+               {
+                 i++;
+                 util_videos_dir_set(argv[i]);
                }
           }
         else
