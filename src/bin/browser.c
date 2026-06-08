@@ -501,8 +501,11 @@ _entry_files_redo(Evas_Object *win, Entry *entry)
    entry->cols = cols;
    entry->rows = rows;
 
-   entry->file_obj = calloc(entry->cols * entry->rows,
-                            sizeof(Evas_Object *));
+   if ((entry->cols * entry->rows) > 0)
+     {
+        entry->file_obj = calloc(entry->cols * entry->rows,
+                                 sizeof(Evas_Object *));
+     }
    if ((entry->cols > 0) && (entry->rows > 0))
      elm_table_pack(entry->table, entry->sizer, 0, 0,
                     entry->cols, entry->rows);
