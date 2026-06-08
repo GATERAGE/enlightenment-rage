@@ -334,7 +334,8 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
    file_rect.y -= 80;
    file_rect.w += 160;
    file_rect.h += 160;
-   if (!eina_rectangles_intersect(&win_rect, &file_rect))
+   if ((!eina_rectangles_intersect(&win_rect, &file_rect)) ||
+       (entry->cols <= 0) || (entry->rows <= 0))
      {
         _entry_files_pop_clear(entry);
         return;
