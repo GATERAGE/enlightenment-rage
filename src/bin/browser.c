@@ -794,6 +794,7 @@ _sel_object_find(Entry *entry)
 {
    int num = (entry->sel_y * entry->cols) + entry->sel_x;
    if (!entry->file_obj) return NULL;
+   if (num < 0) return NULL;
    Evas_Object *o = entry->file_obj[num];
    return o;
 }
@@ -802,6 +803,7 @@ static const char *
 _sel_file_find(Entry *entry)
 {
    int num = (entry->sel_y * entry->cols) + entry->sel_x;
+   if (num < 0) return NULL;
    const char *file = eina_list_nth(entry->files, num);
    return file;
 }
