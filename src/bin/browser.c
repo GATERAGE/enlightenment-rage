@@ -38,6 +38,7 @@ struct _Entry
    Evas_Object *sizer;
    Evas_Coord iw, ih;
    Evas_Object **file_obj;
+   int file_obj_num;
    int cols, rows;
    int sel_x, sel_y;
    Eina_Bool sel : 1;
@@ -259,7 +260,7 @@ _entry_files_pop_clear(Entry *entry)
    // if we had any content at all before - nuke it all
    if ((entry->sels) && (entry->file_obj))
      {
-        k = entry->cols * entry->rows;
+        k = entry->file_obj_num;
         for (i = 0; i < k; i++)
           {
              if (entry->file_obj[i])
@@ -352,6 +353,7 @@ _entry_files_pop_eval(Evas_Object *win, Entry *entry)
         file_rect.y -= 80;
         file_rect.w += 160;
         file_rect.h += 160;
+        if (((j * entry->cols) + i) >= entry->file_obj_num) continue;
         obj = &(entry->file_obj[(j * entry->cols) + i]);
         if (eina_rectangles_intersect(&win_rect, &file_rect))
           {
@@ -490,6 +492,7 @@ _entry_files_redo(Evas_Object *win, Entry *entry)
    _entry_files_pop_clear(entry);
    free(entry->file_obj);
    entry->file_obj = NULL;
+   entry->file_obj_num = 0;
 
    _item_size_get(win, &iw, &ih);
    cols = w / iw;
@@ -503,8 +506,10 @@ _entry_files_redo(Evas_Object *win, Entry *entry)
 
    if ((entry->cols * entry->rows) > 0)
      {
-        entry->file_obj = calloc(entry->cols * entry->rows,
+        entry->file_obj_num = entry->cols * entry->rows;
+        entry->file_obj = calloc(entry->file_obj_num,
                                  sizeof(Evas_Object *));
+        if (!entry->file_obj) entry->file_obj_num = 0;
      }
    if ((entry->cols > 0) && (entry->rows > 0))
      elm_table_pack(entry->table, entry->sizer, 0, 0,
@@ -795,6 +800,7 @@ _sel_object_find(Entry *entry)
    int num = (entry->sel_y * entry->cols) + entry->sel_x;
    if (!entry->file_obj) return NULL;
    if (num < 0) return NULL;
+   if (num >= entry->file_obj_num) return NULL;
    Evas_Object *o = entry->file_obj[num];
    return o;
 }
