@@ -73,7 +73,7 @@ _cb_loaded(void *data, Evas_Object *obj, void *info EINA_UNUSED)
 
         emotion_object_size_get(obj, &iw, &ih);
         if (ratio > 0.0) iw = (ih * ratio);
-        else ratio = iw / ih;
+        else if (ih > 0) ratio = (double)iw / (double)ih;
         if ((ratio >= (4.0 / 3.0)) &&
             (ratio <= (4.0 / 1.0)) &&
             (len >= (60.0 * 60.0)) &&
@@ -257,7 +257,7 @@ elm_main(int argc, char **argv)
    incr = atoi(argv[2]);
    poster = atoi(argv[3]);
 
-   const char *extn = strchr(file, '.');
+   const char *extn = strrchr(file, '.');
    if (extn)
      {
         if ((!strcasecmp(extn, ".mp3")) ||

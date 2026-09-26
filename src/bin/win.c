@@ -418,7 +418,7 @@ win_do_volume(Evas_Object *win, double vol)
 static void
 _restart_vid(Evas_Object *win, Evas_Object *lay, Evas_Object *vid, const char *file, const char *sub)
 {
-   const char *extn = strchr(file, '.');
+   const char *extn = strrchr(file, '.');
    win_newfile(win);
    if ((extn) &&
        ((!strcasecmp(extn, ".mp3")) ||

@@ -21,26 +21,25 @@ static Eldbus_Service_Interface *iface_player = NULL;
 #define PATH    "/org/mpris/MediaPlayer2"
 
 static void
-_cb_name_request(void *data EINA_UNUSED, const Eldbus_Message *msg EINA_UNUSED,
+_cb_name_request(void *data EINA_UNUSED, const Eldbus_Message *msg,
                  Eldbus_Pending *pending EINA_UNUSED)
 {
-   return;
-/*
    unsigned int flag;
 
    if (eldbus_message_error_get(msg, NULL, NULL))
      {
-        fprintf(stderr, "Could not request bus name");
+        fprintf(stderr, "MPRIS: could not request bus name\n");
         return;
      }
    if (!eldbus_message_arguments_get(msg, "u", &flag))
      {
-        fprintf(stderr, "Could not get arguments on on_name_request");
+        fprintf(stderr, "MPRIS: could not get arguments on name request\n");
         return;
      }
-   if (!(flag & ELDBUS_NAME_REQUEST_REPLY_PRIMARY_OWNER))
-     fprintf(stderr, "Name already in use\n");
- */
+   if ((flag != ELDBUS_NAME_REQUEST_REPLY_PRIMARY_OWNER) &&
+       (flag != ELDBUS_NAME_REQUEST_REPLY_ALREADY_OWNER))
+     fprintf(stderr, "MPRIS: " SERVICE " already owned by another instance"
+             " - this one cannot be controlled over D-Bus\n");
 }
 
 /* Implementing almost all of:

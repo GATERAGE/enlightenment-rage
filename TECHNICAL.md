@@ -178,21 +178,24 @@ the EDC, not the C.
 
 ## 8. Issues noticed while reading
 
-These come from reading the code only. **None of this was built or run
-here** (EFL is not installed on the machine that wrote this).
+These come from reading the code only. **None of this has been compiled or
+run.** EFL is not installed system-wide on the machine that wrote this, and
+building the upstream code was not permitted in that session. The "Fix"
+column refers to branch `fix/read-through`. Fixes marked there are
+unverified source edits.
 
-| # | Where | Observation | Effect |
-|---|---|---|---|
-| 1 | `albumart.c` `Q_START`, `_fetch` | Scrapes Google Images over `http://`, with a fixed 2012 UA and HTML-string matching | Likely broken or brittle against current Google markup. It also leaks media metadata or filenames to a third party in cleartext |
-| 2 | `thumb.c` `_cb_loaded` poster branch | `else ratio = iw / ih;` is integer division, and `ih` may be 0 | A 16:9 video with no Emotion ratio computes 1.0, so it is never classed as a movie. If `ih == 0`, the child gets SIGFPE (only `rage_thumb` dies, and it is retried up to 5 times) |
-| 3 | `thumb.c` `elm_main` | Audio detection uses `strchr(file, '.')` (the first dot), not `strrchr` | `my.song.mp3` is not flagged as audio up front. This is harmless in practice, because `_cb_loaded` reclassifies via `emotion_object_audio_handled_get` |
-| 4 | `thumb.c` `_cb_loaded` | A local `int iw, ih` shadows the file-scope `iw, ih` | Only confusing to read; no effect |
-| 5 | `main.c` `-sub` | Ignored when it comes before any file | Silent user error |
-| 6 | `mpris.c` | Bus-name ownership result is ignored | A second instance is invisible to MPRIS clients |
-| 7 | `config.c` | Config only has `version` | Nothing persists between runs: volume, last position, zoom mode, engine choice |
+| # | Where | Observation | Effect | Fix |
+|---|---|---|---|---|
+| 1 | `albumart.c` `Q_START`, `_fetch` | Scrapes Google Images with a fixed 2012 UA and HTML-string matching, over `http://` | Likely broken or brittle against current Google markup. It leaks media metadata or filenames to a third party | **Partial:** now `https://`. Replacing the scrape (e.g. an opt-in MusicBrainz Cover Art Archive lookup) is still open |
+| 2 | `thumb.c` `_cb_loaded` poster branch | `else ratio = iw / ih;` is integer division, and `ih` may be 0 | A 16:9 video with no Emotion ratio computes 1.0, so it is never classed as a movie. If `ih == 0`, the child gets SIGFPE (only `rage_thumb` dies, and it is retried up to 5 times) | **Yes:** float division, guarded by `ih > 0` |
+| 3 | `win.c` `_restart_vid` | Audio detection uses `strchr(file, '.')` on the **full path** (the first dot anywhere) | A dot in any directory name (`~/Music/Mr. Bungle/x.mp3`, `~/.local/...`) stops music being recognised, so album-art mode is not switched on | **Yes:** `strrchr` |
+| 4 | `thumb.c` `elm_main` | Same first-dot bug | Up-front audio flag missed. Mostly harmless, because `_cb_loaded` reclassifies via `emotion_object_audio_handled_get` | **Yes:** `strrchr` |
+| 5 | `thumb.c` `_cb_loaded` | A local `int iw, ih` shadows the file-scope `iw, ih` | Only confusing to read | No |
+| 6 | `main.c` `-sub` | Ignored when it comes before any file | Silent user error | **Yes:** prints a warning |
+| 7 | `mpris.c` `_cb_name_request` | The bus-name reply was ignored (the body was commented out). Its test `flag & PRIMARY_OWNER` was also wrong, because the replies are enum values 1–4, not bit flags | A second instance is silently invisible to MPRIS clients | **Yes:** restored, compares against PRIMARY_OWNER/ALREADY_OWNER, and warns |
+| 8 | `config.c` | Config only has `version` | Nothing persists between runs: volume, last position, zoom mode, engine choice | No |
 
 Upstream is where fixes belong
-(https://git.enlightenment.org/enlightenment/rage/issues). Items 1 and 2
-are the most worth a patch: an HTTPS, opt-in artwork provider (for example
-MusicBrainz Cover Art Archive for audio) and a float ratio with an `ih > 0`
-guard.
+(https://git.enlightenment.org/enlightenment/rage/issues). Once the branch
+has been built and tested, items 2, 3 and 7 are the clean upstream
+candidates.

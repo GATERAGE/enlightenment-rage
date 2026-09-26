@@ -244,6 +244,7 @@ elm_main(int argc, char **argv)
                {
                   i++;
                   if (vid) eina_stringshare_replace(&(vid->sub), argv[i]);
+                  else fprintf(stderr, "WARNING: -sub %s given before any file - ignored\n", argv[i]);
                }
           }
         else if (!strcmp(argv[i], "-dir"))

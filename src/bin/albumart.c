@@ -6,7 +6,7 @@
 #include "albumart.h"
 #include "sha1.h"
 
-#define Q_START "http://www.google.com/search?as_st=y&tbm=isch&hl=en&as_q="
+#define Q_START "https://www.google.com/search?as_st=y&tbm=isch&hl=en&as_q="
 //#define Q_END "&as_epq=&as_oq=&as_eq=&cr=&as_sitesearch=&safe=images&tbs=iar:s,ift:jpg"
 #define Q_END "&as_epq=&as_oq=&as_eq=&cr=&as_sitesearch=&safe=images&tbs=ift:jpg"
 
