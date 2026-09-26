@@ -178,13 +178,24 @@ the EDC, not the C.
 
 ## 8. Issues noticed while reading
 
-These come from reading the code only. **None of this has been compiled or
-run.** EFL is not installed system-wide on the machine that wrote this, and
-building the upstream code was not permitted in that session. The "Fix"
-column refers to branch `fix/read-through`. Fixes marked there are
-unverified source edits.
+These were found by reading the code. The fixes are on `master` (merged
+from `fix/read-through`). They were built against EFL 1.26.2 (Ubuntu
+packages, unpacked locally) and smoke-tested on X11 on 2026-09-26:
 
-| # | Where | Observation | Effect | Fix |
+- `rage_thumb` on a 30 s clip inside `Mr. Dotted.Dir/` exits 0 and writes an
+  `.eet` with frames at 0/10000/20000/30000 ms.
+- `rage -sub x.srt file.mp4` prints the new warning.
+- With two instances running, the first owns `org.mpris.MediaPlayer2.rage`
+  and only the second prints the new MPRIS warning.
+- A tagged `.mp3` in a dotted directory plays (window title
+  "Rage: Test Song") and starts the album-art helper. The music-mode layout
+  itself was not captured on screen, because the 10 s test track ended before
+  the window was shown.
+- Item 2 (poster ratio) is exercised only when Emotion reports no aspect
+  ratio, which the test clip does not trigger. It compiles but is not
+  directly tested.
+
+| # | Where | Observation | Effect | Fix (on master) |
 |---|---|---|---|---|
 | 1 | `albumart.c` `Q_START`, `_fetch` | Scrapes Google Images with a fixed 2012 UA and HTML-string matching, over `http://` | Likely broken or brittle against current Google markup. It leaks media metadata or filenames to a third party | **Partial:** now `https://`. Replacing the scrape (e.g. an opt-in MusicBrainz Cover Art Archive lookup) is still open |
 | 2 | `thumb.c` `_cb_loaded` poster branch | `else ratio = iw / ih;` is integer division, and `ih` may be 0 | A 16:9 video with no Emotion ratio computes 1.0, so it is never classed as a movie. If `ih == 0`, the child gets SIGFPE (only `rage_thumb` dies, and it is retried up to 5 times) | **Yes:** float division, guarded by `ih > 0` |
@@ -196,6 +207,6 @@ unverified source edits.
 | 8 | `config.c` | Config only has `version` | Nothing persists between runs: volume, last position, zoom mode, engine choice | No |
 
 Upstream is where fixes belong
-(https://git.enlightenment.org/enlightenment/rage/issues). Once the branch
-has been built and tested, items 2, 3 and 7 are the clean upstream
-candidates.
+(https://git.enlightenment.org/enlightenment/rage/issues). Items 3, 6 and 7
+are tested and are clean upstream candidates. Item 2 needs a clip without
+aspect metadata to test first.
